@@ -12,15 +12,18 @@ More Later
 
 TODO
 -----------------
+
 v1.0
-* License
-* Base Module
-  * Inserting Subclass (SomeModle::Archive)
-  * Archive method
-  * Intercept destroy/deletes
-  * Restore archive
-* Migrations Module
-  * ??
+
+ *  License
+ *  Base Module
+   *  Inserting Subclass (SomeModle::Archive)
+   *  Archive method
+   *  Intercept destroy/deletes
+   *  Restore archive
+ *  Migrations Module
+   *  ??
 
 v1.1
-* give subclass Base its parent's methods
+
+ *  give subclass Base its parent's methods
