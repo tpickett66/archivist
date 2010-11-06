@@ -1,0 +1,15 @@
+require 'autotest/fsevent'
+require 'redgreen/autotest'
+require 'autotest/growl'
+require 'autotest/timestamp'
+require "autotest/restart"
+
+Autotest::Growl::show_modified_files = true
+Autotest::Growl::one_notification_per_run = true
+Autotest::Growl::clear_terminal = false
+
+Autotest.add_hook :initialize do |autotest|
+  %w{.git .svn .hg .DS_Store ._* .idea vendor tmp log doc}.each do |exception|
+    autotest.add_exception(exception)
+  end
+end
