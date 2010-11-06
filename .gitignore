@@ -2,4 +2,4 @@
 .bundle/
 *.gem
 tmp
-*/*.swp
+*.swp
