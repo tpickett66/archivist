@@ -17,12 +17,12 @@ v1.0
 
  *  License
  *  Base Module
-   *  Inserting Subclass (SomeModle::Archive)
-   *  Archive method
-   *  Intercept destroy/deletes
-   *  Restore archive
+     *  Inserting Subclass (SomeModle::Archive)
+     *  Archive method
+     *  Intercept destroy/deletes
+     *  Restore archive
  *  Migrations Module
-   *  ??
+     *  ??
 
 v1.1
 
