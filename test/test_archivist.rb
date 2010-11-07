@@ -2,10 +2,8 @@ require 'test_helper'
 
 class TestArchivist < Test::Unit::TestCase
   context "The Archivist" do
-    
-    should "work" do
-      assert true
+    should "include Archivist::Base in ActiveRecord::Base" do
+      assert ActiveRecord::Base.include?(Archivist::Base)
     end
-
   end
 end
