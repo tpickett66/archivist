@@ -1,10 +1,18 @@
+require 'rubygems'
+
+require 'test/unit'
+require 'shoulda'
+
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'archivist'
-require 'shoulda'
-require 'test/unit'
 
-class ArchivableModel < ActiveRecord::Base
-  #has_archive
+#put custom assertions here
+class Test::Unit::TestCase
+
+end
+
+class SomeModel < ActiveRecord::Base
+  has_archive
 end
 
 class AAAModel < ActiveRecord::Base
