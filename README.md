@@ -24,6 +24,8 @@ v1.0
  *  Migrations Module
      *  ??
 
-v1.1
+Future
 
- *  give subclass Base its parent's methods
+ *  give subclass Archive its parent's methods
+ *  give Archive relations
+ *  give Archive scopes 
