@@ -1,6 +1,7 @@
 require 'rubygems'
 gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
+require 'active_resource'
 require 'test/unit'
 require 'shoulda'
 require 'logger'
