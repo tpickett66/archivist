@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TestBase < Test::Unit::TestCase
-  context "Archivist::Base" do
+  context "The module Archivist::Base" do
     should "make ActiveRecord::Base respond to has_archive" do
       assert ActiveRecord::Base.respond_to?(:has_archive)
     end
@@ -28,13 +28,10 @@ class TestBase < Test::Unit::TestCase
   context "The archiving functionality" do
     setup do
       build_test_db({:archive=>true})
+      insert_models
     end
     
     context "when calling #copy_to_archive directly" do
-      setup do 
-        insert_models
-      end
-      
       should "not delete the original if told not to" do
         SomeModel.copy_to_archive({:id=>1},false)
         assert !SomeModel.where(:id=>1).empty?
@@ -68,6 +65,64 @@ class TestBase < Test::Unit::TestCase
         SomeModel.where(:id=>1).first.update_attributes!(:first_name=>"Cindy",:last_name=>"Crawford")
         SomeModel.copy_to_archive(:id=>1)
         assert_equal 1,SomeModel::Archive.all.size
+      end
+    end
+    
+    context "when calling delete on an existing record" do
+      setup do
+        SomeModel.where(:id=>1).first.delete
+      end
+      should "archive the record in question" do
+        assert !SomeModel::Archive.where(:id=>1).empty?
+      end
+      should "remove the original record" do
+        assert SomeModel.where(:id=>1).empty?
+      end
+    end
+    
+    context "when calling delete! on an existing record" do
+      setup do
+        SomeModel.where(:id=>1).first.delete!
+      end
+      should "NOT archive the record in question" do
+        assert SomeModel::Archive.where(:id=>1).empty?
+      end
+      should "remove the original record" do
+        assert SomeModel.where(:id=>1).empty?
+      end
+    end
+    
+    context "when calling delete on a new record" do
+      setup do
+        m = SomeModel.new(:first_name=>"Fabio",:last_name=>"Lanzoni")
+        m.delete
+      end
+      should "not archive the record" do
+        assert SomeModel::Archive.where(:first_name=>"Fabio").empty?
+      end
+    end
+    
+    context "when calling destroy on an existing record" do
+      setup do
+        SomeModel.where(:id=>1).first.destroy
+      end
+      should "archive the record in question" do
+        assert !SomeModel::Archive.where(:id=>1).empty?
+      end
+      should "remove the original record" do
+        assert SomeModel.where(:id=>1).empty?
+      end
+    end
+    
+    context "when calling destroy! on an existing record" do
+      setup do
+        SomeModel.where(:id=>1).first.destroy!
+      end
+      should "NOT archive the record in question" do
+        assert SomeModel::Archive.where(:id=>1).empty?
+      end
+      should "remove the original record" do
+        assert SomeModel.where(:id=>1).empty?
       end
     end
   end

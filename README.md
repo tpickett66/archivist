@@ -19,7 +19,7 @@ v1.0
  *  Base Module
      *  <del> Inserting Subclass (SomeModel::Archive) </del>
      *  <del> Archive method </del>
-     *  Intercept destroy/deletes
+     *  <del> Intercept destroy/deletes </del>
      *  Restore archive
  *  Migrations Module
      *  ??
