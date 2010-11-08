@@ -21,6 +21,7 @@ v1.0
      *  <del> Archive method </del>
      *  <del> Intercept destroy/deletes </del>
      *  Restore archive
+     *  Build archive table for existing models
  *  Migrations Module
      *  ??
 

@@ -125,5 +125,58 @@ class TestBase < Test::Unit::TestCase
         assert SomeModel.where(:id=>1).empty?
       end
     end
+    
+    context "when calling delete_all without conditions" do
+      setup do
+        @count = SomeModel.count
+        SomeModel.delete_all
+      end
+      
+      should "empty the original table" do
+        assert SomeModel.all.empty?
+      end
+      
+      should "fill the archive table" do
+        assert_equal @count,SomeModel::Archive.count
+      end
+    end
+    
+    context "when calling delete_all with condiitions" do
+      setup do
+        SomeModel.delete_all(:id=>2)
+      end
+      should "leave non_matching items in table" do
+        assert 1,SomeModel.all.size
+      end
+      should "remove matching items" do
+        assert SomeModel.where(:id=>2).empty?
+      end
+      should "fill the archive table" do
+        assert_equal 1,SomeModel::Archive.count
+      end
+    end
+    
+    context "when calling delete_all! without conditions" do
+      setup do
+        SomeModel.delete_all!
+      end
+      
+      should "empty the original table" do
+        assert SomeModel.all.empty?
+      end
+      
+      should "NOT fill the archive table" do
+        assert SomeModel::Archive.all.empty?
+      end
+    end
+    
+    context "when calling delete_all! with condiitions" do
+      setup do
+        SomeModel.delete_all!(:id=>2)
+      end
+      should "NOT fill the archive table" do
+        assert SomeModel::Archive.all.empty?
+      end
+    end
   end
 end

@@ -9,13 +9,7 @@ require 'logger'
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'archivist'
 
-class SomeModel < ActiveRecord::Base
-  has_archive
-end
-
-class AAAModel < ActiveRecord::Base
-  #acts_as_archive
-end
+require File.join(File.dirname(__FILE__),'models','some_model')
 
 class Test::Unit::TestCase
 
