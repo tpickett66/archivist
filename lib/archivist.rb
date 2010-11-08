@@ -1,6 +1,6 @@
-#require dependancy gems(these should already be here in non-test environments but it never hurts to be safe)
+#require dependancies eventhough starting a rails app will already have them in place
 require 'rubygems'
-gem 'activerecord','~>3.0.1'
+gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
 
 #require the rest of Archivist's files
