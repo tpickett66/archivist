@@ -17,8 +17,8 @@ v1.0
 
  *  License
  *  Base Module
-     *  <strike>Inserting Subclass (SomeModel::Archive)</strike>
-     *  Archive method
+     *  <del> Inserting Subclass (SomeModel::Archive) </del>
+     *  <del> Archive method </del>
      *  Intercept destroy/deletes
      *  Restore archive
  *  Migrations Module
