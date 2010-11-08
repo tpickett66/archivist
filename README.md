@@ -28,4 +28,5 @@ Future
 
  *  give subclass Archive its parent's methods
  *  give Archive relations
- *  give Archive scopes 
+ *  give Archive scopes
+ *  make archive\_all method chain-able with scopes 
