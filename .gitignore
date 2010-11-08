@@ -3,3 +3,4 @@
 *.gem
 tmp
 *.swp
+log
