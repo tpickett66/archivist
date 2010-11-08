@@ -1,0 +1,6 @@
+test:
+  adapter: mysql2
+  database: archivist
+  username: root
+  password: 
+  host: localhost
