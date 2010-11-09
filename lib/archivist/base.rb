@@ -1,3 +1,9 @@
+# Require sub-module's files
+mods = File.join(File.dirname(__FILE__),"base","**","*.rb")
+Dir.glob(mods).each do |mod|
+  require mod
+end
+
 module Archivist
   module Base
     def self.included(base)
@@ -13,6 +19,10 @@ module Archivist
             alias_method :delete_all!, :delete_all
           end
           
+          def self.archive_indexes
+            #{Array(options[:indexes]).collect{|i| i.to_s}.inspect}
+          end
+
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
@@ -20,6 +30,7 @@ module Archivist
         EOF
         include InstanceMethods
         extend ClassExtensions
+        include DB
       end
 
       def acts_as_archive(options={})

@@ -2,7 +2,7 @@ README.md
 =================
 
 This gem is intended as a direct replacement for acts\_as\_archive (AAA)
-in Rails 3 apps with all of the same functionality and wrapping AAA's 
+in Rails 3 apps with most of the same functionality and wrapping AAA's 
 methods in aliases to maintain compatibilty for some time. Thanks to 
 [Winton Welsh](https://github.com/winton "Winton on github") for his 
 original work on AAA, it is good solution to a problem that makes 
@@ -21,7 +21,7 @@ v1.0
      *  <del> Archive method </del>
      *  <del> Intercept destroy/deletes </del>
      *  Restore archive
-     *  Build archive table for existing models
+     *  <del> Build archive table for existing models </del>
  *  Migrations Module
      *  ??
 

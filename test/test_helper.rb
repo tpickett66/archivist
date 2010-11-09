@@ -9,10 +9,12 @@ require 'logger'
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'archivist'
 
-require File.join(File.dirname(__FILE__),'models','some_model')
-
 class Test::Unit::TestCase
 
+end
+
+def connection
+  connect_to_db
 end
 
 def connect_to_db
@@ -55,3 +57,7 @@ def insert_models
   SomeModel.create(:first_name=>"Heidi",:last_name=>"Klum")
   SomeModel.create(:first_name=>"Adriana",:last_name=>"Lima")
 end
+
+connect_to_db
+
+require File.join(File.dirname(__FILE__),'models','some_model')
