@@ -22,7 +22,15 @@ module Archivist
           def self.archive_indexes
             #{Array(options[:indexes]).collect{|i| i.to_s}.inspect}
           end
-
+          
+          def self.has_archive?
+            true
+          end
+          
+          def self.acts_as_archive?
+            warn "DEPRECATION WARNING: #acts_as_archive is provided for compatibility with AAA and will be removed soon, please use has_archive?"
+            has_archive?
+          end
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
@@ -74,17 +82,44 @@ module Archivist
             else
               self::Archive.where(:id=>m.id).first.update_attributes(attrs)
             end
-            if where = "" && delete
-              connection.execute("DELETE FROM #{table_name}")
-            elsif delete
-              connection.execute("DELETE FROM #{table_name} WHERE #{where}")
-            end
+            m.destroy! if delete
           end
         end
       end
       
+      def copy_from_archive(conditions,delete=true)
+        where = sanitize_sql(conditions)
+        where = where.gsub("#{table_name}","archived_#{table_name}") unless where.nil? || where =~ /archived/
+        unless where == ""
+          found = self::Archive.where(where)
+        else
+          found = self::Archive.all
+        end
+
+        found.each do |m|
+          self.transaction do
+            attrs = m.attributes.reject{|k,v| k=="deleted_at"}
+
+            if self.where(:id=>m.id).empty?
+              new_m = self.create(attrs)
+              connection.execute(%Q{UPDATE #{table_name} 
+                                    SET #{self.primary_key} = #{m.id} 
+                                    WHERE #{self.primary_key} = #{new_m.id}
+                                   })
+            else
+              self.where(:id=>m.id).first.update_attributes(attrs)
+            end
+            m.destroy if delete  
+          end
+        end
+      end
+
       def delete_all(conditions=nil)
         copy_to_archive(conditions)
+      end
+
+      def restore_all(conditions=nil)
+        copy_from_archive(conditions)
       end
     end
   end

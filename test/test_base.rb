@@ -17,6 +17,22 @@ class TestBase < Test::Unit::TestCase
         archive = SomeModel::Archive
       end
     end
+
+    should "respond to archive_indexes as a class method" do
+      assert SomeModel.respond_to?(:archive_indexes)
+    end
+
+    should "respond to acts_as_archive?" do
+      assert SomeModel.respond_to?(:acts_as_archive?)
+    end
+    
+    should "respond to has_archive?" do
+      assert SomeModel.respond_to?(:has_archive?)
+    end
+
+    should "respond to has_archive? with true" do
+      assert SomeModel.has_archive?
+    end
   end
 
   context "The Archive subclass" do
@@ -176,6 +192,39 @@ class TestBase < Test::Unit::TestCase
       end
       should "NOT fill the archive table" do
         assert SomeModel::Archive.all.empty?
+      end
+    end
+
+    context "when restoring from the archive" do
+      setup do
+        SomeModel.delete_all
+      end
+      context "with conditions" do
+        setup do
+          @mod = SomeModel::Archive.where(:id=>1).first
+          SomeModel.copy_from_archive(:id=>1)
+        end
+        should "re-populate the original table" do
+          assert_equal 1,SomeModel.count
+        end
+        should "remove the archived record" do
+          assert SomeModel::Archive.where(:id=>1).empty?
+        end
+        should "restore with original id" do
+          assert_equal @mod.first_name,SomeModel.where(:id=>1).first.first_name
+        end
+      end
+
+      context "using restore_all" do
+        setup do
+          SomeModel.restore_all
+        end
+        should "repopulate the original table" do
+          assert_equal 2,SomeModel.count
+        end
+        should "empty the archive table" do
+          assert SomeModel::Archive.all.empty?
+        end
       end
     end
   end

@@ -16,11 +16,11 @@ TODO
 v1.0
 
  *  License
- *  Base Module
+ *  <del>Base Module</del>
      *  <del> Inserting Subclass (SomeModel::Archive) </del>
      *  <del> Archive method </del>
      *  <del> Intercept destroy/deletes </del>
-     *  Restore archive
+     *  <del>Restore archive</del>
      *  <del> Build archive table for existing models </del>
  *  Migrations Module
      *  ??
