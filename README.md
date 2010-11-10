@@ -23,7 +23,7 @@ v1.0
      *  <del>Restore archive</del>
      *  <del> Build archive table for existing models </del>
  *  Migrations Module
-     *  ??
+     *  rewrite method_missing to act on the archived table
 
 Future
 

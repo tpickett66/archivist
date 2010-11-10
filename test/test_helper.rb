@@ -53,6 +53,10 @@ def build_test_db(opts={:archive=>false})
   end
 end
 
+def column_list(table)
+  connection.columns(table).collect{|c| c.name}
+end
+
 def insert_models
   SomeModel.create(:first_name=>"Heidi",:last_name=>"Klum")
   SomeModel.create(:first_name=>"Adriana",:last_name=>"Lima")

@@ -10,8 +10,15 @@ Dir.glob(files).each do |file|
 end
 
 ActiveRecord::Base.send(:include, Archivist::Base)
-
+ActiveRecord::Migration.send(:include,Archivist::Migration)
 module Archivist
-
+  def self.update(*models)
+    models.each do |klass|
+      if klass.respond_to?(:has_archive) && klass.has_archive?
+        klass.create_archive_table
+        klass.create_archive_indexes
+      end
+    end
+  end
 end
 
