@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name        = "tpickett66-archivist"
+  s.name        = "archivist"
   s.version     = "1.0.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Tyler Pickett"]
