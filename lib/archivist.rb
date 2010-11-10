@@ -4,7 +4,7 @@ gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
 
 #require the rest of Archivist's files
-files = File.join('lib','**','*.rb')
+files = File.join(File.dirname(__FILE__),'**','*.rb')
 Dir.glob(files).each do |file|
   require file
 end
