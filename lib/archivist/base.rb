@@ -78,7 +78,10 @@ module Archivist
             attrs = m.attributes.merge(:deleted_at=>DateTime.now)
             
             if self::Archive.where(:id=>m.id).empty? #create a new one if necessary, else update
-              self::Archive.create!(attrs)
+              archived = self::Archive.new
+              archived.id = m.id
+              archived.attributes = attrs.reject{|k,v| k==:id}
+              archived.save
             else
               self::Archive.where(:id=>m.id).first.update_attributes(attrs)
             end

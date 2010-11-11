@@ -52,7 +52,7 @@ class TestBase < Test::Unit::TestCase
         SomeModel.copy_to_archive({:id=>1},false)
         assert !SomeModel.where(:id=>1).empty?
       end
-      
+
       should "create a new entry in the archive when told not to delete" do
         SomeModel.copy_to_archive({:id=>1},false)
         assert !SomeModel::Archive.where(:id=>1).empty?
@@ -88,11 +88,24 @@ class TestBase < Test::Unit::TestCase
       setup do
         SomeModel.where(:id=>1).first.delete
       end
+      
       should "archive the record in question" do
         assert !SomeModel::Archive.where(:id=>1).empty?
       end
+      
       should "remove the original record" do
         assert SomeModel.where(:id=>1).empty?
+      end
+
+      should "not change a model's id" do
+        @original = SomeModel.new
+        @original.id = 15
+        @original.first_name = "Clark"
+        @original.last_name = "Wayne"
+        @original.save
+        SomeModel.where(:id=>15).first.destroy
+        @archived = SomeModel::Archive.where(:id=>15)
+        assert_equal "Wayne",@archived.first.last_name
       end
     end
     
