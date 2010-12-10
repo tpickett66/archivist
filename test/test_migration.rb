@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.join(File.dirname(__FILE__), 'test_helper')
 
 class TestMigration < Test::Unit::TestCase
   context "The Migrations module" do
