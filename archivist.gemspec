@@ -2,9 +2,9 @@
 
 Gem::Specification.new do |s|
   s.name        = "archivist"
-  s.version     = "1.0.1"
+  s.version     = "1.0.2"
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Tyler Pickett"]
+  s.authors     = ["Tyler Pickett", "Michael Schubert"]
   s.email       = ["t.pickett66@gmail.com"]
   s.homepage    = "http://github.com/tpickett66/archivist"
   s.summary     = "A rails 3 model archiving system based on acts_as_archive"
