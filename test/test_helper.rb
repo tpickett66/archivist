@@ -8,10 +8,10 @@ require 'shoulda'
 require 'logger'
 require "fileutils"
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
-require 'archivist'
+ROOT_PATH = File.join(File.dirname(__FILE__), "..")
 
-class Test::Unit::TestCase; end
+$LOAD_PATH << File.join(ROOT_PATH, 'lib')
+require 'archivist'
 
 def connection
   unless ActiveRecord::Base.connected?
@@ -26,7 +26,7 @@ def connection
 end
 
 def build_test_db(opts={:archive=>false})
-  log_directory = File.join(File.dirname(__FILE__),'..','log')
+  log_directory = File.join(ROOT_PATH, 'log')
   FileUtils.mkdir_p log_directory
 
   logger_file =  File.open(File.join(log_directory, 'test.log'),File::RDWR|File::CREAT)
