@@ -5,10 +5,11 @@ module Archivist
       def self.included(base)
         base.send(:extend, ClassMethods)
         base.send(:include, InstanceMethods)
+        connection_class = base.connection.class.to_s.downcase
 
-        if base.connection.class.to_s.include?("Mysql")
+        if connection_class.include?("mysql")
           base.send(:extend, MySQL)
-        elsif base.connection.class.to_s.include?("Postgresql")
+        elsif connection_class.include?("postgresql")
           base.send(:extend, PostgreSQL)
         else
           raise "DB type not supported by Archivist!"
