@@ -6,6 +6,7 @@ require 'active_resource'
 require 'test/unit'
 require 'shoulda'
 require 'logger'
+require "fileutils"
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'archivist'
@@ -25,7 +26,10 @@ def connection
 end
 
 def build_test_db(opts={:archive=>false})
-  logger_file =  File.open(File.join(File.dirname(__FILE__),'..','log','test.log'),File::RDWR|File::CREAT)
+  log_directory = File.join(File.dirname(__FILE__),'..','log')
+  FileUtils.mkdir_p log_directory
+
+  logger_file =  File.open(File.join(log_directory, 'test.log'),File::RDWR|File::CREAT)
   logger_file.sync = true
   ActiveRecord::Base.logger = Logger.new(logger_file)
   
