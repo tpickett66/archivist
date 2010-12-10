@@ -34,19 +34,19 @@ def build_test_db(opts={:archive=>false})
   ActiveRecord::Base.logger = Logger.new(logger_file)
   
   #make sure we have a clean slate
-  connect_to_db.execute("DROP TABLE IF EXISTS some_models")
-  connect_to_db.execute("DROP TABLE IF EXISTS archived_some_models")
-  connect_to_db.execute("DROP TABLE IF EXISTS schema_migrations")
+  connection.execute("DROP TABLE IF EXISTS some_models")
+  connection.execute("DROP TABLE IF EXISTS archived_some_models")
+  connection.execute("DROP TABLE IF EXISTS schema_migrations")
   
   #create a 'some_models' table
-  connect_to_db.create_table(:some_models) do |t|
+  connection.create_table(:some_models) do |t|
     t.string :first_name
     t.string :last_name
   end
   
   if opts[:archive]
     # create a archived_some_models table
-    connect_to_db.create_table(:archived_some_models) do |t|
+    connection.create_table(:archived_some_models) do |t|
       t.string :first_name
       t.string :last_name
       t.datetime :deleted_at
