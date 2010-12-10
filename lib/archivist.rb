@@ -1,4 +1,4 @@
-#require dependancies eventhough starting a rails app will already have them in place
+#require dependencies even though starting a rails app will already have them in place
 require 'rubygems'
 gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
