@@ -17,6 +17,7 @@ GEM
     arel (2.0.6)
     builder (2.1.2)
     i18n (0.5.0)
+    pg (0.10.0)
     rake (0.8.7)
     thoughtbot-shoulda (2.11.1)
     tzinfo (0.3.23)
@@ -27,5 +28,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord (>= 3.0.1)
   activeresource (>= 3.0.1)
+  pg
   rake
   thoughtbot-shoulda
