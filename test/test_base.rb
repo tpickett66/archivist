@@ -157,7 +157,7 @@ class TestBase < Test::Unit::TestCase
       end
     end
     
-    context "when calling delete_all with condiitions" do
+    context "when calling delete_all with conditions" do
       setup do
         SomeModel.delete_all(:id=>2)
       end
@@ -186,7 +186,7 @@ class TestBase < Test::Unit::TestCase
       end
     end
     
-    context "when calling delete_all! with condiitions" do
+    context "when calling delete_all! with conditions" do
       setup do
         SomeModel.delete_all!(:id=>2)
       end
