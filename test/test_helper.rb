@@ -1,4 +1,5 @@
 require 'rubygems'
+require "bundler/setup"
 gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
 require 'active_resource'
@@ -9,20 +10,16 @@ require 'logger'
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'archivist'
 
-class Test::Unit::TestCase
-
-end
+class Test::Unit::TestCase; end
 
 def connection
-  connect_to_db
-end
-
-def connect_to_db
   unless ActiveRecord::Base.connected?
     config_path = File.join(File.dirname(__FILE__),'db','config','database.yml')
     config = YAML.load(File.open(config_path))
     ActiveRecord::Base.configurations = config
-    ActiveRecord::Base.establish_connection(config['mysql'])
+
+    database = ENV["DB"] || "mysql"
+    ActiveRecord::Base.establish_connection(config[database])
   end
   @connection ||= ActiveRecord::Base.connection
 end
@@ -62,6 +59,5 @@ def insert_models
   SomeModel.create(:first_name=>"Adriana",:last_name=>"Lima")
 end
 
-connect_to_db
-
+connection
 require File.join(File.dirname(__FILE__),'models','some_model')
