@@ -31,6 +31,10 @@ module Archivist
             connection.add_column("archived_#{table_name}",:deleted_at,:datetime)
           end
         end
+
+        def create_archive_indexes
+          # TODO?
+        end
       end
 
       module InstanceMethods
