@@ -1,5 +1,6 @@
 V1.0.3
 * Added serialized attribute support
+* merged in all changes from schubert's fork
 
 V1.0.2
 * Changed archiving functionality to persist original ID
