@@ -14,10 +14,6 @@ class Test::Unit::TestCase
 end
 
 def connection
-  connect_to_db
-end
-
-def connect_to_db
   unless ActiveRecord::Base.connected?
     config_path = File.join(File.dirname(__FILE__),'db','config','database.yml')
     config = YAML.load(File.open(config_path))
@@ -33,19 +29,19 @@ def build_test_db(opts={:archive=>false})
   ActiveRecord::Base.logger = Logger.new(logger_file)
   
   #make sure we have a clean slate
-  connect_to_db.execute("DROP TABLE IF EXISTS some_models")
-  connect_to_db.execute("DROP TABLE IF EXISTS archived_some_models")
-  connect_to_db.execute("DROP TABLE IF EXISTS schema_migrations")
+  connection.execute("DROP TABLE IF EXISTS some_models")
+  connection.execute("DROP TABLE IF EXISTS archived_some_models")
+  connection.execute("DROP TABLE IF EXISTS schema_migrations")
   
   #create a 'some_models' table
-  connect_to_db.create_table(:some_models) do |t|
+  connection.create_table(:some_models) do |t|
     t.string :first_name
     t.string :last_name
   end
   
   if opts[:archive]
     # create a archived_some_models table
-    connect_to_db.create_table(:archived_some_models) do |t|
+    connection.create_table(:archived_some_models) do |t|
       t.string :first_name
       t.string :last_name
       t.datetime :deleted_at
@@ -62,6 +58,6 @@ def insert_models
   SomeModel.create(:first_name=>"Adriana",:last_name=>"Lima")
 end
 
-connect_to_db
+connection
 
 require File.join(File.dirname(__FILE__),'models','some_model')
