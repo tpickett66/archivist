@@ -17,7 +17,7 @@ class TestDb < Test::Unit::TestCase
       end
 
       should "create the archive table" do
-        assert connect_to_db.table_exists?("archived_some_models")
+        assert connection.table_exists?("archived_some_models")
       end
 
       should "create the table with the same columns" do
