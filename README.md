@@ -8,26 +8,49 @@ methods in aliases to maintain compatibilty for some time. Thanks to
 original work on AAA, it is good solution to a problem that makes 
 maintaining audit records a breeze.
 
-More Later
+Requirements
+------------
+This gem is intended to be used with ActiveRecord/ActiveSupport 3.0.1 and later.
+
+Install
+-------
+**Gemfile**:
+    gem 'archivist'
+    
+Update models
+-------------
+add `has_archive` to your models:
+    class SomeModel < ActiveRecord::Base
+      has_archive
+    end
+    
+<a name="add_archive_tables"></a>
+Add Archive tables
+------------------
+There are two ways to do this, the first is to use the built in updater like acts as archive.
+`Archivist.update SomeModel`
+Currently this doesn't support adding indexes automatically (AAA does) but I'm working on doing multi column indexes (any help is greatly appreciated)
+
+The second way of adding archive tables is to build a migration yourself, there currently is no advantage of doing this. I am working on allowing overriding the copy\_to\_archive method to allow injection of additional information along with the original data (i.e. tracking what user caused the archival) which may require hand built migrations.
+
+Usage
+-----
+Use `destroy`, `delete`, `destroy_all` as usual and the data will get moved to the archive table. If you really want the data to go away you can still do so by simply calling `destroy!` etc. This bypasses the archiving step but leaves your callback chain intact where appropriate. 
+
+Migrations affecting the columns on the original model's table will be applied to the archive table as well.
+
+Contributing
+------------
+If you'd like to help out please feel free to fork and browse the TODO list below or  add a feature that you're in need of. Then send a pull request my way and I'll happily merge in well tested changes.
+
+Also, I use autotest and MySQL but [nertzy (Grant Hutchins)](https://github.com/nertzy "Grant on github") was kind enough to add a rake task for running the specs as well as adding support for testing against Postgres using the pg gem.
 
 TODO
------------------
+----
 
-v1.0
-
- *  <del>License</del>
- *  <del>Base Module</del>
-     *  <del> Inserting Subclass (SomeModel::Archive) </del>
-     *  <del> Archive method </del>
-     *  <del> Intercept destroy/deletes </del>
-     *  <del>Restore archive</del>
-     *  <del> Build archive table for existing models </del>
- *  <del>Migrations Module</del>
-     *  <del>rewrite method_missing to act on the archived table</del>
-
-Future
-
- *  give subclass Archive its parent's methods
- *  give Archive relations
- *  give Archive scopes
- *  make archive\_all method chain-able with scopes 
+ *  <del>Maintain seralized attributes from original model</del>
+ *  give Archive scopes from parent (may only work w/ 1.9 since scopes are Procs)
+ *  give subclass Archive its parent's methods (method_missing?)
+ *  associate SomeModel::Archive with SomeModel (if archiving more than one copy)
+ *  associate Archive with other models (SomeModel.reflect\_on\_all\_associations?)
+ *  make archive\_all method chain-able with scopes and other finder type items
