@@ -39,6 +39,10 @@ class TestBase < Test::Unit::TestCase
     should "not write updated timestamps" do
       assert !SomeModel::Archive.record_timestamps
     end
+    
+    should "have the same serialized attributes as the parent" do
+      assert_equal SomeModel.serialized_attributes,SomeModel::Archive.serialized_attributes
+    end
   end
   
   context "The archiving functionality" do

@@ -38,6 +38,8 @@ def build_test_db(opts={:archive=>false})
   connection.create_table(:some_models) do |t|
     t.string :first_name
     t.string :last_name
+    t.string :random_array
+    t.string :some_hash
   end
   
   if opts[:archive]
@@ -45,6 +47,8 @@ def build_test_db(opts={:archive=>false})
     connection.create_table(:archived_some_models) do |t|
       t.string :first_name
       t.string :last_name
+      t.string :random_array
+      t.string :some_hash
       t.datetime :deleted_at
     end
   end
@@ -55,8 +59,16 @@ def column_list(table)
 end
 
 def insert_models
-  SomeModel.create(:first_name=>"Heidi",:last_name=>"Klum")
-  SomeModel.create(:first_name=>"Adriana",:last_name=>"Lima")
+  SomeModel.create(:first_name=>"Heidi",
+                   :last_name=>"Klum",
+                   :random_array=>[1,2,3,4],
+                   :some_hash=>{:external_id=>15,
+                                :dog_name=>"Fluffy"})
+  SomeModel.create(:first_name=>"Adriana",
+                   :last_name=>"Lima",
+                   :random_array=>[1,2,3,4],
+                   :some_hash=>{:external_id=>15,
+                                 :dog_name=>"Fluffy"})
 end
 
 connection

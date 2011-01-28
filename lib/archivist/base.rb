@@ -12,6 +12,10 @@ module Archivist
     
     module ClassMethods
       def has_archive(options={})
+        serializations = ""
+        self.serialized_attributes.each do |key,value|
+          serializations << "serialize(:#{key},#{value.to_s})\n"
+        end
         class_eval <<-EOF
           alias_method :delete!, :delete
           
@@ -34,6 +38,7 @@ module Archivist
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
+            #{serializations}
           end
         EOF
         include InstanceMethods
