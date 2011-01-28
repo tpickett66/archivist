@@ -1,0 +1,8 @@
+V1.0.3
+* Added serialized attribute support
+
+V1.0.2
+* Changed archiving functionality to persist original ID
+
+V 1.0.0
+Initial release supports the basic functionality I expected to need (copy/restore to/from archive)
