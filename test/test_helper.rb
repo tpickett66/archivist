@@ -6,26 +6,30 @@ require 'active_resource'
 require 'test/unit'
 require 'shoulda'
 require 'logger'
+require "fileutils"
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+ROOT_PATH = File.join(File.dirname(__FILE__), "..")
+
+$LOAD_PATH << File.join(ROOT_PATH, 'lib')
 require 'archivist'
-
-class Test::Unit::TestCase
-
-end
 
 def connection
   unless ActiveRecord::Base.connected?
     config_path = File.join(File.dirname(__FILE__),'db','config','database.yml')
     config = YAML.load(File.open(config_path))
     ActiveRecord::Base.configurations = config
-    ActiveRecord::Base.establish_connection(config['mysql'])
+
+    database = ENV["DB"] || "mysql"
+    ActiveRecord::Base.establish_connection(config[database])
   end
   @connection ||= ActiveRecord::Base.connection
 end
 
 def build_test_db(opts={:archive=>false})
-  logger_file =  File.open(File.join(File.dirname(__FILE__),'..','log','test.log'),File::RDWR|File::CREAT)
+  log_directory = File.join(ROOT_PATH, 'log')
+  FileUtils.mkdir_p log_directory
+
+  logger_file =  File.open(File.join(log_directory, 'test.log'),File::RDWR|File::CREAT)
   logger_file.sync = true
   ActiveRecord::Base.logger = Logger.new(logger_file)
   

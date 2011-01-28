@@ -4,3 +4,10 @@ mysql:
   username: root
   password: 
   host: localhost
+
+postgresql:
+  adapter: postgresql
+  database: archivist
+  username: root
+  password:
+  host: localhost

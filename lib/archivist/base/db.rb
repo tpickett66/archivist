@@ -23,13 +23,17 @@ module Archivist
 
         def create_archive_table
           if table_exists? && !archive_table_exists?
-            cols = self.content_columns
+            cols = self.columns.reject { |column| column.name == primary_key }
             connection.create_table("archived_#{table_name}")
             cols.each do |c|
               connection.add_column("archived_#{table_name}",c.name,c.type)
             end
             connection.add_column("archived_#{table_name}",:deleted_at,:datetime)
           end
+        end
+
+        def create_archive_indexes
+          # TODO?
         end
       end
 
