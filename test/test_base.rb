@@ -175,7 +175,7 @@ class TestBase < Test::Unit::TestCase
         SomeModel.delete_all(:id=>2)
       end
       should "leave non_matching items in table" do
-        assert 1,SomeModel.all.size
+        assert_equal 1,SomeModel.all.size
       end
       should "remove matching items" do
         assert SomeModel.where(:id=>2).empty?
