@@ -5,3 +5,4 @@ tmp
 *.swp
 log
 .DS_Store
+.rvmrc
