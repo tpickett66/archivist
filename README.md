@@ -23,7 +23,21 @@ add `has_archive` to your models:
     class SomeModel < ActiveRecord::Base
       has_archive
     end
-    
+
+N.B. if you have any serialized attributes the has\_archive declaration *MUST* be after the serialization declarations or they will not be preserved and things will break when you try to deserialize the attributes.
+
+i.e.
+    class AnotherModel < ActiveRecord::Base
+      serialize(:some_array,Array)
+      has_archive
+    end
+
+*NOT*
+    class ThisModel < ActiveRecord::Base
+      has_archive
+      serialize(:a_hash,Hash)
+    end
+
 <a name="add_archive_tables"></a>
 Add Archive tables
 ------------------
@@ -50,7 +64,7 @@ TODO
 
  *  <del>Maintain seralized attributes from original model</del>
  *  give Archive scopes from parent (may only work w/ 1.9 since scopes are Procs)
- *  give subclass Archive its parent's methods (method_missing?)
+ *  <del>give subclass Archive its parent's methods (method_missing?)</del>
  *  associate SomeModel::Archive with SomeModel (if archiving more than one copy)
  *  associate Archive with other models (SomeModel.reflect\_on\_all\_associations?)
  *  make archive\_all method chain-able with scopes and other finder type items
