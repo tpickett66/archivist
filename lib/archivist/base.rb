@@ -39,6 +39,7 @@ module Archivist
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
             #{serializations}
+            include Archivist::ArchiveMethods
           end
         EOF
         include InstanceMethods

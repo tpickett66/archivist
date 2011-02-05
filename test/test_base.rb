@@ -43,6 +43,10 @@ class TestBase < Test::Unit::TestCase
     should "have the same serialized attributes as the parent" do
       assert_equal SomeModel.serialized_attributes,SomeModel::Archive.serialized_attributes
     end
+
+    should "have the Archivist::Base::Archive included in it" do
+      assert SomeModel::Archive.include?(Archivist::ArchiveMethods)
+    end
   end
   
   context "The archiving functionality" do
