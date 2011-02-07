@@ -19,16 +19,15 @@ module Archivist
         super(method,*args,&block)
       end
     end
-
-    def respond_to?(method)
-      klass = get_klass
-      if klass.instance_methods.include?(method.to_s)
+=begin
+    def respond_to?(method,include_private=false)
+      if get_klass_instance_methods.include?(method.to_s)
         return true
       else
-        super
+        super(method,include_private)
       end
     end
-
+=end
     def get_klass
       @klass ||= Kernel.const_get(get_klass_name)
     end
