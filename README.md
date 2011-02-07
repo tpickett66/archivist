@@ -64,7 +64,7 @@ TODO
 
  *  <del>Maintain seralized attributes from original model</del>
  *  give Archive scopes from parent (may only work w/ 1.9 since scopes are Procs)
- *  <del>give subclass Archive its parent's methods (method_missing?)</del>
+ *  <del>give subclass Archive its parent's methods (method\_missing?)</del>
  *  associate SomeModel::Archive with SomeModel (if archiving more than one copy)
  *  associate Archive with other models (SomeModel.reflect\_on\_all\_associations?)
  *  make archive\_all method chain-able with scopes and other finder type items
