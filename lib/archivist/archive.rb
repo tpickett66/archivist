@@ -8,15 +8,19 @@ module Archivist
     end
 
     def method_missing(method,*args,&block)
-      if get_klass_instance_methods.include?(method.to_s)
-        instance = get_klass.new
-        instance.id = self.id
-        instance_attribute_names = instance.attribute_names
-        attrs = self.attributes.select{|k,v| instance_attribute_names.include?(k.to_s)}
-        instance.attributes= attrs,false
-        instance.send(method,*args,&block)
-      else
-        super(method,*args,&block)
+      begin
+        super(method,*args,&block) #try to let rails resolve the missing method first
+      rescue NoMethodError => e
+        if get_klass_instance_methods.include?(method.to_s) #check to see if there is a method available elsewhere
+          instance = get_klass.new
+          instance.id = self.id
+          instance_attribute_names = instance.attribute_names
+          attrs = self.attributes.select{|k,v| instance_attribute_names.include?(k.to_s)}
+          instance.attributes= attrs,false
+          instance.send(method,*args,&block)
+        else
+          raise e #finally bomb out if it's not going to work
+        end
       end
     end
 =begin
