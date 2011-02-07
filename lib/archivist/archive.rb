@@ -3,22 +3,20 @@ module Archivist
     def self.included(base)
       base.class_eval do
         extend ArchiveClassMethods
-        protected :get_klass
+        protected :get_klass,:get_klass_name,:get_klass_instance_methods
       end
     end
 
     def method_missing(method,*args,&block)
-      klass = get_klass
-      if /find/.match(method.to_s)
-        return super
-      elsif klass.instance_methods.include?(method.to_s)
-        instance_id = self.id
-        attrs = self.attributes.reject{|k,v| k.to_s == "deleted_at" || k.to_s == "id"}
-        instance = klass.new(attrs)
-        instance.id = instance_id
-        return instance.send(method,*args,&block)
+      if get_klass_instance_methods.include?(method.to_s)
+        instance = get_klass.new
+        instance.id = self.id
+        instance_attribute_names = instance.attribute_names
+        attrs = self.attributes.select{|k,v| instance_attribute_names.include?(k.to_s)}
+        instance.attributes= attrs,false
+        instance.send(method,*args,&block)
       else
-        return super
+        super(method,*args,&block)
       end
     end
 
@@ -32,11 +30,18 @@ module Archivist
     end
 
     def get_klass
-      @klass ||= Kernel.const_get(self.class.to_s.split("::").first)
+      @klass ||= Kernel.const_get(get_klass_name)
+    end
+    
+    def get_klass_name
+      @klass_name ||= self.class.to_s.split("::").first
     end
 
-    module ArchiveClassMethods
+    def get_klass_instance_methods
+      @klass_instance_methods ||= get_klass.instance_methods(false)
     end
+
+    module ArchiveClassMethods;end
   end
 end
 
