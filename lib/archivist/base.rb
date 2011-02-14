@@ -74,8 +74,44 @@ module Archivist
     end
     
     module InstanceMethods #these defs can't happen untill after we've aliased their respective originals
+      def self.included(base)
+        puts "#{base.to_s}: #{base.archive_options[:allow_multiple_archives]}"
+        if base.archive_options[:allow_multiple_archives].present? #we put the original pk in the fk instead
+          base.class_eval <<-EOF
+            def copy_self_to_archive
+              self.class.transaction do
+                attrs = self.attributes.merge(:deleted_at=>DateTime.now)
+                archived = #{base.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
+                archived.#{base.to_s.underscore}_id = attrs['id']
+                yeild(archived) if block_given?
+                archived.save
+              end
+            end
+          EOF
+        else
+          base.class_eval <<-EOF
+            def copy_self_to_archive
+              self.class.transaction do #it would be really shitty for us to loose data in the middle of this
+                attrs = self.attributes.merge(:deleted_at=>DateTime.now)
+                archived = #{base.to_s}::Archive.new
+                if archived.class.where(:id=>self.id).empty? #create a new one if necessary, else update
+                  archived.id = attrs["id"]
+                  archived.attributes = attrs.reject{|k,v| k=='id'}
+                else
+                  archived = archived.class.where(:id=>attrs["id"]).first
+                  archived.update_attributes(attrs)
+                end
+                yield(archived) if block_given?
+                archived.save
+              end
+            end
+          EOF
+        end
+      end
+
       def delete
-        self.class.copy_to_archive({:id=>self.id}) unless new_record?
+        result = self.copy_self_to_archive unless new_record?
+        self.delete! if result
         @destroyed = true
         freeze
       end
@@ -95,27 +131,14 @@ module Archivist
       end
     end
 
-    module ClassExtensions #these can't get included in the class def untill after all aliases are done
-      def copy_to_archive(conditions,delete=true)
+    module ClassExtensions #these can't get included in the class def until after all aliases are done
+      def copy_to_archive(conditions,delete=true,&block)
         where = sanitize_sql(conditions)
         found = self.where(where)
         
         found.each do |m|
-          self.transaction do # I would hate for something to happen in the middle of all of this
-            attrs = m.attributes.merge(:deleted_at=>DateTime.now)
-            
-            archived = self::Archive.new
-            if self::Archive.where(:id=>m.id).empty? #create a new one if necessary, else update
-              archived.id = m.id
-              archived.attributes = attrs.reject{|k,v| k==:id}
-            else
-              archived = self::Archive.where(:id=>m.id).first
-              archived.update_attributes(attrs)
-            end
-            yield(archived) if block_given?
-            archived.save
-            m.destroy! if delete
-          end
+          result = m.copy_self_to_archive(&block)
+          m.destroy! if delete && result
         end
       end
       

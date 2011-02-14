@@ -81,6 +81,21 @@ class TestBase < ActiveSupport::TestCase
       insert_models
     end
     
+    context "when using copy_self_to_archive and the associate_with_original option is set to true" do
+      setup do
+        @zapp = AnotherModel.create!(:first_name=>"Zapp",:last_name=>"Brannigan")
+        @zapp.copy_self_to_archive
+      end
+      
+      should "create a new archive record" do
+        assert_equal 1,AnotherModel::Archive.count
+      end
+      
+      should "create a child record" do
+        assert_equal 1,@zapp.archived_another_models.size
+      end
+    end
+
     context "when calling #copy_to_archive directly" do
       should "not delete the original if told not to" do
         SomeModel.copy_to_archive({:id=>1},false)
