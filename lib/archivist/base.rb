@@ -6,16 +6,29 @@ end
 
 module Archivist
   module Base
+
+    DEFAULT_OPTIONS = {:associate_with_original=>false,:allow_multiple_archives=>false}
+
     def self.included(base)
       base.extend ClassMethods
     end
     
     module ClassMethods
       def has_archive(options={})
+        options = DEFAULT_OPTIONS.merge(options)
+        options[:allow_multiple_archives] = true if options[:associate_with_original]
+        
         serializations = ""
         self.serialized_attributes.each do |key,value|
           serializations << "serialize(:#{key},#{value.to_s})\n"
         end
+        
+        has_many_association,belongs_to_association = ""
+        if options[:associate_with_original]
+          has_many_association = "has_many :archived_#{self.table_name},:class_name=>'#{self.new.class.to_s}::Archive'" 
+          belongs_to_association = "belongs_to :#{self.table_name},:class_name=>'#{self.new.class.to_s}'"
+        end
+
         class_eval <<-EOF
           alias_method :delete!, :delete
           
@@ -26,6 +39,10 @@ module Archivist
           def self.archive_indexes
             #{Array(options[:indexes]).collect{|i| i.to_s}.inspect}
           end
+
+          def self.archive_options
+            #{options.inspect}
+          end
           
           def self.has_archive?
             true
@@ -35,12 +52,16 @@ module Archivist
             warn "DEPRECATION WARNING: #acts_as_archive is provided for compatibility with AAA and will be removed soon, please use has_archive?"
             has_archive?
           end
+
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
             #{serializations}
+            #{belongs_to_association}
             include Archivist::ArchiveMethods
           end
+
+          #{has_many_association}
         EOF
         include InstanceMethods
         extend ClassExtensions

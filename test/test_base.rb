@@ -38,6 +38,28 @@ class TestBase < ActiveSupport::TestCase
     should "respond to has_archive? with true" do
       assert SomeModel.has_archive?
     end
+
+    should "respond_to? archive_options" do
+      assert SomeModel.respond_to?(:archive_options)
+    end
+
+    should "return the options hash when archive_options is called" do
+      options_hash = Archivist::Base::DEFAULT_OPTIONS.merge({:associate_with_original=>true,:allow_multiple_archives=>true})
+      assert_equal options_hash,AnotherModel.archive_options
+    end
+
+    context "with the associate_with_original option set to true" do
+      should "cause the main class to have a has_many reflection to the achive class" do
+        reflections = AnotherModel.reflect_on_all_associations(:has_many).map{|r| r.name}
+        assert_match /archived_another_models/,reflections.join(',')
+      end
+      
+      should "cause the Archive class to have a belongs_to reflection to the main class" do
+        reflections = AnotherModel::Archive.reflect_on_all_associations(:belongs_to).map{|r| r.name}
+        assert_match /another_models/,reflections.join(',')
+      end
+
+    end
   end
 
   context "The Archive subclass" do
