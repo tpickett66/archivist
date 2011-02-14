@@ -1,3 +1,8 @@
+v1.0.4
+* added options for associating archived records to a non-archived record
+* associated archived records with original (if allowing multiple copies)
+* added method_missing to ::Archive class to allow calling original class' methods
+
 V1.0.3
 * Added serialized attribute support
 * merged in all changes from schubert's fork
