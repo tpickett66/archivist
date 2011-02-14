@@ -58,23 +58,30 @@ Additional Options
 ###Allowing multiple archived copies
 By default `copy_self_to_archive` just keeps updating a single instance of the archived record, this behavior is find if you're just trying to keep your main working table clean but can be problematic if you need a history of changes to a record.
 This behavior can be changed to allow multiple copies of a archived record to be created by setting the `:allow_multiple_archives` to true in the options hash when calling `has_archive`.
+
 ####Example:
 > class SpecialModel < AR::Base
+
 >   has\_archive :allow\_multiple\_archives=>true
+
 > end
 
 ### Associating archive to original
 The default here is to not associate the archived records in any way to the originals. But, if you're keeping a history of changes to a record the archived copies can be associated automatically with the 'original' by setting the `associate_with_original` option to true.
 
-*N.B.*: Using this option automatically sets `allow_multiple_archives` to true
+*N.B.* Using this option automatically sets `allow_multiple_archives` to true
 
 ####Example
-> class SpecialModel < AR::Base
->   has\_archive :associate\_with\_original=>true
-> end
+> class SpecialModel < AR::Base<br />
+>   has\_archive :associate\_with\_original=>true<br />
+> end<br />
+
 allows for calls like:
+
 `SpecialModel.first.archived_special_models`
+
 or
+
 `SpecialModel::Archive.first.special_model`
 
 ###Customizing copy\_self\_to\_archive
@@ -83,12 +90,19 @@ A block can be passed into `copy_self_to_archive` which takes a single argument 
 ####Example:
 Supposing we have added an archiver\_id column to our archive table we can pass a block into the `copy_self_to_archive` method setting this value. The block gets called immediately before saving the archived record so all of the attributes have been copied over from the original and are available for use in the block.
 > class SpecialModel \< AR:Base
+
 >   has\_archive
+
 >   def archive!(user)
+
 >     self.copy_self_to_archive do |archive|
+
 >       archive.archiver_id = user.id
+
 >     end
+
 >   end
+
 > end
 
 
