@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestMigration < Test::Unit::TestCase
+class TestMigration < ActiveSupport::TestCase
   context "The Migrations module" do
     setup do
       build_test_db(:archive=>true)

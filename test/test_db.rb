@@ -1,8 +1,9 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestDb < Test::Unit::TestCase
+class TestDb < ActiveSupport::TestCase
 
   context "The DB module" do
+
     setup do
       build_test_db(:archive=>false)
     end

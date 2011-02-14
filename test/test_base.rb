@@ -1,7 +1,12 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestBase < Test::Unit::TestCase
+class TestBase < ActiveSupport::TestCase
+
   context "The module Archivist::Base" do
+    setup do
+      connection
+    end
+
     should "make ActiveRecord::Base respond to has_archive" do
       assert ActiveRecord::Base.respond_to?(:has_archive)
     end
@@ -51,7 +56,6 @@ class TestBase < Test::Unit::TestCase
   
   context "The archiving functionality" do
     setup do
-      build_test_db({:archive=>true})
       insert_models
     end
     
