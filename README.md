@@ -74,7 +74,7 @@ The default here is to not associate the archived records in any way to the orig
 ####Example
 <pre>
   class SpecialModel < AR::Base
-    has\_archive :associate\_with\_original=>true
+    has_archive :associate_with_original=>true
   end
 </pre>
 
@@ -92,8 +92,8 @@ A block can be passed into `copy_self_to_archive` which takes a single argument 
 ####Example:
 Supposing we have added an archiver\_id column to our archive table we can pass a block into the `copy_self_to_archive` method setting this value. The block gets called immediately before saving the archived record so all of the attributes have been copied over from the original and are available for use in the block.
 <pre>
-  class SpecialModel \< AR:Base
-    has\_archive
+  class SpecialModel < AR:Base
+    has_archive
     def archive!(user)
       self.copy_self_to_archive do |archive|
         archive.archiver_id = user.id
