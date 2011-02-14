@@ -40,7 +40,6 @@ module Archivist
       class_eval <<-EOF
         def #{method_name}(*args,&block)
           instance = #{get_klass_name}.new
-          instance.id = self.id
           attrs = self.attributes.select{|k,v| #{get_klass.new.attribute_names.inspect}.include?(k.to_s)}
           instance.attributes= attrs,false
           instance.#{method_name}(*args,&block)
