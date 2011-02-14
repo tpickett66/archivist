@@ -29,6 +29,9 @@ module Archivist
               connection.add_column("archived_#{table_name}",c.name,c.type)
             end
             connection.add_column("archived_#{table_name}",:deleted_at,:datetime)
+            if archive_options[:associate_with_original]
+              connection.add_column("archived_#{table_name}","#{self.new.class.to_s.underscore}_id",:integer)
+            end
           end
         end
 

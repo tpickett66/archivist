@@ -32,5 +32,16 @@ class TestDb < ActiveSupport::TestCase
         assert columns.include?("deleted_at")
       end
     end
+
+    context "when create_archive_table is called when the association option is true" do
+      setup do
+        AnotherModel.create_archive_table
+      end
+
+      should "create a foreign key column" do
+        columns = AnotherModel::Archive.columns.map(&:name)
+        assert columns.include?("another_model_id")
+      end
+    end
   end
 end
