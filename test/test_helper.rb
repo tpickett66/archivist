@@ -41,6 +41,8 @@ class ActiveSupport::TestCase
     #make sure we have a clean slate
     connection.execute("DROP TABLE IF EXISTS some_models")
     connection.execute("DROP TABLE IF EXISTS archived_some_models")
+    connection.execute("DROP TABLE IF EXISTS another_models")
+    connection.execute("DROP TABLE IF EXISTS archived_another_models")
     connection.execute("DROP TABLE IF EXISTS schema_migrations")
   
     #create a 'some_models' table
@@ -50,7 +52,12 @@ class ActiveSupport::TestCase
       t.string :random_array
       t.string :some_hash
     end
-  
+    
+    connection.create_table(:another_models) do |t|
+      t.string :first_name
+      t.string :last_name
+    end
+
     if opts[:archive]
       # create a archived_some_models table
       connection.create_table(:archived_some_models) do |t|
@@ -59,6 +66,13 @@ class ActiveSupport::TestCase
         t.string :random_array
         t.string :some_hash
         t.datetime :deleted_at
+      end
+
+      connection.create_table(:archived_another_models) do |t|
+        t.string :first_name
+        t.string :last_name
+        t.datetime :deleted_at
+        t.integer :another_model_id
       end
     end
   end
@@ -79,4 +93,7 @@ class ActiveSupport::TestCase
   end
 end
 connection
-require File.join(File.dirname(__FILE__),'models','some_model')
+models = File.join(File.dirname(__FILE__),'models','**','*.rb')
+Dir.glob(models).each do |model|
+  require model
+end
