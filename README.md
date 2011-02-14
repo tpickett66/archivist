@@ -63,6 +63,7 @@ TODO
 ----
 
  *  <del>Maintain seralized attributes from original model</del>
+ *  <del>allow passing of a block into copy\_to\_archive</del>
  *  give Archive scopes from parent (may only work w/ 1.9 since scopes are Procs)
  *  <del>give subclass Archive its parent's methods (method\_missing?)</del>
  *  associate SomeModel::Archive with SomeModel (if archiving more than one copy)

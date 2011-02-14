@@ -65,6 +65,14 @@ class TestBase < ActiveSupport::TestCase
         assert !SomeModel.where(:id=>1).empty?
       end
 
+      should "allow the user to pass in a block" do
+        block_called = false
+        SomeModel.copy_to_archive({:id=>1},false) do |archive|
+          block_called = true
+        end
+        assert block_called
+      end   
+
       should "create a new entry in the archive when told not to delete" do
         SomeModel.copy_to_archive({:id=>1},false)
         assert !SomeModel::Archive.where(:id=>1).empty?

@@ -83,14 +83,16 @@ module Archivist
           self.transaction do # I would hate for something to happen in the middle of all of this
             attrs = m.attributes.merge(:deleted_at=>DateTime.now)
             
+            archived = self::Archive.new
             if self::Archive.where(:id=>m.id).empty? #create a new one if necessary, else update
-              archived = self::Archive.new
               archived.id = m.id
               archived.attributes = attrs.reject{|k,v| k==:id}
-              archived.save
             else
-              self::Archive.where(:id=>m.id).first.update_attributes(attrs)
+              archived = self::Archive.where(:id=>m.id).first
+              archived.update_attributes(attrs)
             end
+            yield(archived) if block_given?
+            archived.save
             m.destroy! if delete
           end
         end
@@ -107,7 +109,9 @@ module Archivist
 
         found.each do |m|
           self.transaction do
-            attrs = m.attributes.reject{|k,v| k=="deleted_at"}
+            my_attribute_names = self.new.attribute_names
+            #this should be Hash.select but 1.8.7 returns an array from select but a hash from reject... dumb
+            attrs = m.attributes.reject{|k,v| !my_attribute_names.include?(k.to_s)} 
 
             if self.where(:id=>m.id).empty?
               new_m = self.create(attrs)
