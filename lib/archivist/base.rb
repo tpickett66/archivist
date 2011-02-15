@@ -126,6 +126,10 @@ module Archivist
         "yield(archived) if block_given?
         archived.save"
       end
+      
+      private :build_inclusion_strings,:build_serialization_strings,
+              :build_has_many_association,:build_belongs_to_association,
+              :build_copy_self_to_archive,:yield_and_save
     end
     
     module InstanceMethods #these defs can't happen untill after we've aliased their respective originals
