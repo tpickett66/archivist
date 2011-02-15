@@ -17,14 +17,6 @@ module Archivist
       def has_archive(options={})
         options = DEFAULT_OPTIONS.merge(options)
         options[:allow_multiple_archives] = true if options[:associate_with_original]
-
-        modules = ""
-        if options[:included_modules].present?
-          options[:included_modules] = [options[:included_modules]] unless options[:included_modules.is_a?(Array)]
-          options[:included_modules].each do |mod|
-            modules << "include #{mod.to_s}\n"
-          end
-        end
         
         serializations = ""
         self.serialized_attributes.each do |key,value|
@@ -66,14 +58,30 @@ module Archivist
             self.table_name = "archived_#{self.table_name}"
             #{serializations}
             #{belongs_to_association}
-            #{modules}
+            #{build_inclusion_strings(options[:included_modules])}
             include Archivist::ArchiveMethods
           end
 
           #{has_many_association}
         EOF
         
-        if options[:allow_multiple_archives] #we put the original pk in the fk instead
+        include InstanceMethods
+        extend ClassExtensions
+        include DB
+      end
+
+      def acts_as_archive(options={})
+        has_archive(options)
+      end
+
+      def build_inclusion_strings(included_modules)
+        modules = ""
+        included_modules = [included_modules] unless included_modules.is_a?(Array)
+        included_modules.each do |mod|
+          modules << "include #{mod.to_s}\n"
+        end
+        return modules
+      end
           class_eval <<-EOF
             def copy_self_to_archive
               self.class.transaction do
