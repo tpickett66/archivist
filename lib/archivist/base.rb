@@ -18,10 +18,6 @@ module Archivist
         options = DEFAULT_OPTIONS.merge(options)
         options[:allow_multiple_archives] = true if options[:associate_with_original]
         
-        serializations = ""
-        self.serialized_attributes.each do |key,value|
-          serializations << "serialize(:#{key},#{value.to_s})\n"
-        end
         
         has_many_association,belongs_to_association = ""
         if options[:associate_with_original]
@@ -56,8 +52,8 @@ module Archivist
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
-            #{serializations}
             #{belongs_to_association}
+            #{build_serialization_strings(self.serialized_attributes)}
             #{build_inclusion_strings(options[:included_modules])}
             include Archivist::ArchiveMethods
           end
@@ -81,6 +77,14 @@ module Archivist
           modules << "include #{mod.to_s}\n"
         end
         return modules
+      end
+      
+      def build_serialization_strings(serializde_attributes)
+        serializations = ""
+        self.serialized_attributes.each do |key,value|
+          serializations << "serialize(:#{key},#{value.to_s})\n"
+        end
+        return serializations
       end
           class_eval <<-EOF
             def copy_self_to_archive
