@@ -1,3 +1,6 @@
+v1.0.5
+* removed redundant class_eval from build_copy_self_to_archive
+
 v1.0.4
 * added options for associating archived records to a non-archived record
 * associated archived records with original (if allowing multiple copies)
