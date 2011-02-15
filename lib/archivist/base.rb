@@ -18,13 +18,6 @@ module Archivist
         options = DEFAULT_OPTIONS.merge(options)
         options[:allow_multiple_archives] = true if options[:associate_with_original]
         
-        
-        has_many_association,belongs_to_association = ""
-        if options[:associate_with_original]
-          has_many_association = "has_many :archived_#{self.table_name},:class_name=>'#{self.new.class.to_s}::Archive'" 
-          belongs_to_association = "belongs_to :#{self.table_name},:class_name=>'#{self.new.class.to_s}'"
-        end
-
         class_eval <<-EOF
           alias_method :delete!, :delete
           
@@ -52,13 +45,13 @@ module Archivist
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
-            #{belongs_to_association}
             #{build_serialization_strings(self.serialized_attributes)}
+            #{build_belongs_to_association(options[:associate_with_original])}
             #{build_inclusion_strings(options[:included_modules])}
             include Archivist::ArchiveMethods
           end
 
-          #{has_many_association}
+          #{build_has_many_association(options[:associate_with_original])}
         EOF
         
         include InstanceMethods
@@ -85,6 +78,14 @@ module Archivist
           serializations << "serialize(:#{key},#{value.to_s})\n"
         end
         return serializations
+      end
+      
+      def build_has_many_association(associate=false)
+        associate ? "has_many :archived_#{self.table_name},:class_name=>'#{self.new.class.to_s}::Archive'" : ""
+      end
+      
+      def build_belongs_to_association(associate=false)
+        associate ? "belongs_to :#{self.table_name},:class_name=>'#{self.new.class.to_s}'" : ""
       end
           class_eval <<-EOF
             def copy_self_to_archive
