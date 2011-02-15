@@ -10,18 +10,18 @@ maintaining audit records a breeze.
 
 TOC
 ---
-1.<a href="#requirements">Requirements</a>
-2.<a href="#install">Install</a>
-2.<a href="#update_models">Update models</a>
-2.<a href="#add_archive_tables">Add Archive tables</a>
-1.<a href="#basic_usage">Basic Usage</a>
-1.<a href="#additional_options">Additional Options</a>
-    1.<a href="#multiple_archives">Allowing multiple archived copies</a>
-    1.<a href="#associating">Associating archive to original</a>
-    1.<a href="#including">Including External modules</a>
-    1.<a href="#customizing">Customizing `copy_self_to_archive`</a>
-1.<a href="#contributing">Contributing</a>
-1.<a href="#todo">TODO</a>
+1. <a href="#requirements">Requirements</a>
+2. <a href="#install">Install</a>
+2. <a href="#update_models">Update models</a>
+2. <a href="#add_archive_tables">Add Archive tables</a>
+1. <a href="#basic_usage">Basic Usage</a>
+1. <a href="#additional_options">Additional Options</a>
+    1. <a href="#multiple_archives">Allowing multiple archived copies</a>
+    1. <a href="#associating">Associating archive to original</a>
+    1. <a href="#including">Including External modules</a>
+    1. <a href="#customizing">Customizing `copy_self_to_archive`</a>
+1. <a href="#contributing">Contributing</a>
+1. <a href="#todo">TODO</a>
 
 <a name="requirements"></a>
 Requirements
