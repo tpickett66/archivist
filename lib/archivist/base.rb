@@ -92,33 +92,29 @@ module Archivist
       
       def build_copy_self_to_archive(allow_multiple=false)
         if allow_multiple #we put the original pk in the fk instead
-          class_eval <<-EOF
-            def copy_self_to_archive
-              self.class.transaction do
-                attrs = self.attributes.merge(:deleted_at=>DateTime.now)
-                archived = #{self.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
-                archived.#{self.to_s.underscore}_id = attrs['id']
-                #{yield_and_save}
-              end
+          "def copy_self_to_archive
+            self.class.transaction do
+              attrs = self.attributes.merge(:deleted_at=>DateTime.now)
+              archived = #{self.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
+              archived.#{self.to_s.underscore}_id = attrs['id']
+              #{yield_and_save}
             end
-          EOF
+          end"
         else
-          class_eval <<-EOF
-            def copy_self_to_archive
-              self.class.transaction do #it would be really shitty for us to loose data in the middle of this
-                attrs = self.attributes.merge(:deleted_at=>DateTime.now)
-                archived = #{self.to_s}::Archive.new
-                if archived.class.where(:id=>self.id).empty? #create a new one if necessary, else update
-                  archived.id = attrs["id"]
-                  archived.attributes = attrs.reject{|k,v| k=='id'}
-                else
-                  archived = archived.class.where(:id=>attrs["id"]).first
-                  archived.update_attributes(attrs)
-                end
-                #{yield_and_save}
+          "def copy_self_to_archive
+            self.class.transaction do #it would be really shitty for us to loose data in the middle of this
+              attrs = self.attributes.merge(:deleted_at=>DateTime.now)
+              archived = #{self.to_s}::Archive.new
+              if archived.class.where(:id=>self.id).empty? #create a new one if necessary, else update
+                archived.id = attrs[\"id\"]
+                archived.attributes = attrs.reject{|k,v| k=='id'}
+              else
+                archived = archived.class.where(:id=>attrs[\"id\"]).first
+                archived.update_attributes(attrs)
               end
+              #{yield_and_save}
             end
-          EOF
+          end"
         end
       end
 
