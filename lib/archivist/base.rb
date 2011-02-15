@@ -63,37 +63,25 @@ module Archivist
 
           #{has_many_association}
         EOF
-        include InstanceMethods
-        extend ClassExtensions
-        include DB
-      end
-
-      def acts_as_archive(options={})
-        has_archive(options)
-      end
-    end
-    
-    module InstanceMethods #these defs can't happen untill after we've aliased their respective originals
-      def self.included(base)
-        puts "#{base.to_s}: #{base.archive_options[:allow_multiple_archives]}"
-        if base.archive_options[:allow_multiple_archives].present? #we put the original pk in the fk instead
-          base.class_eval <<-EOF
+        
+        if options[:allow_multiple_archives] #we put the original pk in the fk instead
+          class_eval <<-EOF
             def copy_self_to_archive
               self.class.transaction do
                 attrs = self.attributes.merge(:deleted_at=>DateTime.now)
-                archived = #{base.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
-                archived.#{base.to_s.underscore}_id = attrs['id']
+                archived = #{self.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
+                archived.#{self.to_s.underscore}_id = attrs['id']
                 yeild(archived) if block_given?
                 archived.save
               end
             end
           EOF
         else
-          base.class_eval <<-EOF
+          class_eval <<-EOF
             def copy_self_to_archive
               self.class.transaction do #it would be really shitty for us to loose data in the middle of this
                 attrs = self.attributes.merge(:deleted_at=>DateTime.now)
-                archived = #{base.to_s}::Archive.new
+                archived = #{self.to_s}::Archive.new
                 if archived.class.where(:id=>self.id).empty? #create a new one if necessary, else update
                   archived.id = attrs["id"]
                   archived.attributes = attrs.reject{|k,v| k=='id'}
@@ -107,7 +95,18 @@ module Archivist
             end
           EOF
         end
+        
+        include InstanceMethods
+        extend ClassExtensions
+        include DB
       end
+
+      def acts_as_archive(options={})
+        has_archive(options)
+      end
+    end
+    
+    module InstanceMethods #these defs can't happen untill after we've aliased their respective originals
 
       def delete
         result = self.copy_self_to_archive unless new_record?
