@@ -52,6 +52,8 @@ module Archivist
           end
 
           #{build_has_many_association(options[:associate_with_original])}
+          
+          #{build_copy_self_to_archive(options[:allow_multiple_archives])}
         EOF
         
         include InstanceMethods
@@ -87,14 +89,16 @@ module Archivist
       def build_belongs_to_association(associate=false)
         associate ? "belongs_to :#{self.table_name},:class_name=>'#{self.new.class.to_s}'" : ""
       end
+      
+      def build_copy_self_to_archive(allow_multiple=false)
+        if allow_multiple #we put the original pk in the fk instead
           class_eval <<-EOF
             def copy_self_to_archive
               self.class.transaction do
                 attrs = self.attributes.merge(:deleted_at=>DateTime.now)
                 archived = #{self.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
                 archived.#{self.to_s.underscore}_id = attrs['id']
-                yeild(archived) if block_given?
-                archived.save
+                #{yield_and_save}
               end
             end
           EOF
@@ -111,20 +115,16 @@ module Archivist
                   archived = archived.class.where(:id=>attrs["id"]).first
                   archived.update_attributes(attrs)
                 end
-                yield(archived) if block_given?
-                archived.save
+                #{yield_and_save}
               end
             end
           EOF
         end
-        
-        include InstanceMethods
-        extend ClassExtensions
-        include DB
       end
 
-      def acts_as_archive(options={})
-        has_archive(options)
+      def yield_and_save
+        "yield(archived) if block_given?
+        archived.save"
       end
     end
     
