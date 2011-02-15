@@ -74,6 +74,10 @@ class TestBase < ActiveSupport::TestCase
     should "have the Archivist::Base::Archive included in it" do
       assert SomeModel::Archive.include?(Archivist::ArchiveMethods)
     end
+    
+    should "have the correct modules included when the included_modules option is set" do
+      assert SomeModel::Archive.include?(ThisModule)
+    end
   end
   
   context "The archiving functionality" do

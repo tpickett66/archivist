@@ -17,6 +17,14 @@ module Archivist
       def has_archive(options={})
         options = DEFAULT_OPTIONS.merge(options)
         options[:allow_multiple_archives] = true if options[:associate_with_original]
+
+        modules = ""
+        if options[:included_modules].present?
+          options[:included_modules] = [options[:included_modules]] unless options[:included_modules.is_a?(Array)]
+          options[:included_modules].each do |mod|
+            modules << "include #{mod.to_s}\n"
+          end
+        end
         
         serializations = ""
         self.serialized_attributes.each do |key,value|
@@ -58,6 +66,7 @@ module Archivist
             self.table_name = "archived_#{self.table_name}"
             #{serializations}
             #{belongs_to_association}
+            #{modules}
             include Archivist::ArchiveMethods
           end
 
