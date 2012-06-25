@@ -3,10 +3,11 @@ require 'bundler/setup'
 gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
 require 'active_resource'
-require 'test/unit'
+require 'minitest/unit'
 require 'shoulda'
 require 'logger'
 require "fileutils"
+require 'ruby-debug'
 
 ROOT_PATH = File.join(File.dirname(__FILE__), "..")
 
@@ -15,7 +16,8 @@ require 'archivist'
 
 def connection
   unless ActiveRecord::Base.connected?
-    config_path = File.join(File.dirname(__FILE__),'db','config','database.yml')
+    ActiveRecord::Base.logger = logger
+    config_path = File.join(File.dirname(__FILE__),'config','database.yml')
     config = YAML.load(File.open(config_path))
     ActiveRecord::Base.configurations = config
 
@@ -25,64 +27,29 @@ def connection
   @connection ||= ActiveRecord::Base.connection
 end
 
+def logger
+  return @logger if @logger
+  FileUtils.mkdir_p("#{File.dirname(__FILE__)}/../log")
+  log_path = File.expand_path(File.dirname(__FILE__)+'/../log/test.log')
+  @logger = Logger.new(log_path)
+end
+
 class ActiveSupport::TestCase
   class_eval do
     use_transactional_fixtures = true
-  end
-
-  def build_test_db(opts={:archive=>false})
-    log_directory = File.join(ROOT_PATH, 'log')
-    FileUtils.mkdir_p log_directory
-
-    logger_file =  File.open(File.join(log_directory, 'test.log'),File::RDWR|File::CREAT)
-    logger_file.sync = true
-    ActiveRecord::Base.logger = Logger.new(logger_file)
-  
-    #make sure we have a clean slate
-    connection.execute("DROP TABLE IF EXISTS some_models")
-    connection.execute("DROP TABLE IF EXISTS archived_some_models")
-    connection.execute("DROP TABLE IF EXISTS another_models")
-    connection.execute("DROP TABLE IF EXISTS archived_another_models")
-    connection.execute("DROP TABLE IF EXISTS schema_migrations")
-  
-    #create a 'some_models' table
-    connection.create_table(:some_models) do |t|
-      t.string :first_name
-      t.string :last_name
-      t.string :random_array
-      t.string :some_hash
-    end
-    
-    connection.create_table(:another_models) do |t|
-      t.string :first_name
-      t.string :last_name
-    end
-
-    if opts[:archive]
-      # create a archived_some_models table
-      connection.create_table(:archived_some_models) do |t|
-        t.string :first_name
-        t.string :last_name
-        t.string :random_array
-        t.string :some_hash
-        t.datetime :deleted_at
-      end
-
-      connection.create_table(:archived_another_models) do |t|
-        t.string :first_name
-        t.string :last_name
-        t.datetime :deleted_at
-        t.integer :another_model_id
-      end
-    end
   end
 
   def column_list(table)
     connection.columns(table).collect{|c| c.name}
   end
 
-  def insert_models
-    build_test_db(:archive=>true)
+  def teardown
+    %w{some_models another_models archived_some_models archived_another_models}.each do |t|
+      connection.execute("TRUNCATE TABLE #{t}")
+    end
+  end
+
+  def seed_db
     array = [1,2,3,4]
     hash = {:dog_name=>"Astro",:cat_name=>"Catbert"}
     connection.execute("INSERT INTO some_models 
