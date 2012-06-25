@@ -1,11 +1,12 @@
 source :rubygems
-gem "activerecord", ">=3.0.1"
+gem 'activerecord','~>3.0.0'
 
 group :test do
   gem 'minitest'
   gem "ruby-debug"
   gem "rake"
   gem "shoulda"
+  gem 'appraisal'
 end
 
 group :mysql do

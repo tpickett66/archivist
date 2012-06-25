@@ -1,13 +1,14 @@
 require 'rubygems'
-require 'bundler'
 require 'bundler/setup'
+require 'appraisal'
 require 'rake/testtask'
-require 'active_record'
+
 Bundler::GemHelper.install_tasks
 
 task :default => :test
 
 def connection
+  require 'active_record'
   unless ActiveRecord::Base.connected?
     config_path = File.join(File.dirname(__FILE__),'test','config','database.yml')
     config = YAML.load(File.open(config_path))
