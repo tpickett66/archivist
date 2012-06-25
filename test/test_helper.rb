@@ -2,7 +2,6 @@ require 'rubygems'
 require 'bundler/setup'
 gem 'activerecord','~>3.0.1' #enforce rails 3+
 require 'active_record'
-require 'active_resource'
 require 'minitest/unit'
 require 'shoulda'
 require 'logger'
