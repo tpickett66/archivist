@@ -3,11 +3,6 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 class TestDb < ActiveSupport::TestCase
 
   context "The DB module" do
-
-    setup do
-      build_test_db(:archive=>false)
-    end
-
     should "make models respond to create_archive_table" do
       assert SomeModel.respond_to?(:create_archive_table)
     end

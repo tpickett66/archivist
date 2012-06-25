@@ -82,7 +82,7 @@ class TestBase < ActiveSupport::TestCase
   
   context "The archiving functionality" do
     setup do
-      insert_models
+      seed_db
     end
     
     context "when using copy_self_to_archive and the associate_with_original option is set to true" do
