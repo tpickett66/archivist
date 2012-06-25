@@ -7,7 +7,7 @@ end
 module Archivist
   module Base
 
-    DEFAULT_OPTIONS = {:associate_with_original=>false,:allow_multiple_archives=>false}
+    ARCHIVIST_DEFAULTS = {:associate_with_original=>false,:allow_multiple_archives=>false}
 
     def self.included(base)
       base.extend ClassMethods
@@ -15,7 +15,7 @@ module Archivist
     
     module ClassMethods
       def has_archive(options={})
-        options = DEFAULT_OPTIONS.merge(options)
+        options = ARCHIVIST_DEFAULTS.merge(options)
         options[:allow_multiple_archives] = true if options[:associate_with_original]
         
         class_eval <<-EOF

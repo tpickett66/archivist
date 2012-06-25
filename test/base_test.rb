@@ -44,7 +44,7 @@ class TestBase < ActiveSupport::TestCase
     end
 
     should "return the options hash when archive_options is called" do
-      options_hash = Archivist::Base::DEFAULT_OPTIONS.merge({:associate_with_original=>true,:allow_multiple_archives=>true})
+      options_hash = Archivist::Base::ARCHIVIST_DEFAULTS.merge({:associate_with_original=>true,:allow_multiple_archives=>true})
       assert_equal options_hash,AnotherModel.archive_options
     end
 
