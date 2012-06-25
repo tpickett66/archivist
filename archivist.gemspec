@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = "archivist"
-  s.version     = "1.0.5.1"
+  s.version     = "1.1.0.beta1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Tyler Pickett"]
   s.email       = ["t.pickett66@gmail.com"]
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = %Q{This is a functional replacement for acts_as_archive in
                       rails 3 applications, the only functionality that is not
                       duplicated is the migration from acts_as_paranoid}
-  s.add_dependency("activerecord","~>3.0.1")
+  s.add_dependency("activerecord",">=3.0.0")
   s.add_development_dependency("thoughtbot-shoulda")
  
   s.files        = Dir.glob("{bin,lib}/**/*") + %w(MIT-LICENSE README.md)
