@@ -17,45 +17,45 @@ module Archivist
       def has_archive(options={})
         options = ARCHIVIST_DEFAULTS.merge(options)
         options[:allow_multiple_archives] = true if options[:associate_with_original]
-        
-        class_eval <<-EOF
+
+        class_eval(%Q{
           alias_method :delete!, :delete
-          
+
           class << self
             alias_method :delete_all!, :delete_all
-          end
-          
-          def self.archive_indexes
-            #{Array(options[:indexes]).collect{|i| i.to_s}.inspect}
-          end
 
-          def self.archive_options
-            #{options.inspect}
-          end
-          
-          def self.has_archive?
-            true
-          end
-          
-          def self.acts_as_archive?
-            warn "DEPRECATION WARNING: #acts_as_archive is provided for compatibility with AAA and will be removed soon, please use has_archive?"
-            has_archive?
+            def archive_indexes
+              #{Array(options[:indexes]).collect{|i| i.to_s}.inspect}
+            end
+
+            def archive_options
+              #{options.inspect}
+            end
+
+            def has_archive?
+              true
+            end
+
+            def acts_as_archive?
+              warn("DEPRECATION WARNING: #acts_as_archive is provided for compatibility with AAA and will be removed soon, please use has_archive?",caller )
+              has_archive?
+            end
           end
 
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
-            #{build_serialization_strings(self.serialized_attributes)}
-            #{build_belongs_to_association(options[:associate_with_original])}
-            #{build_inclusion_strings(options[:included_modules])}
             include Archivist::ArchiveMethods
           end
-
-          #{build_has_many_association(options[:associate_with_original])}
           
           #{build_copy_self_to_archive(options[:allow_multiple_archives])}
-        EOF
-        
+        },File.expand_path(__FILE__),21)
+
+        attach_serializations!(self)
+        include_modules!(self,options[:included_modules]) if options[:included_modules]
+
+        build_associations!(self) if options[:associate_with_original]
+
         include InstanceMethods
         extend ClassExtensions
         include DB
@@ -65,31 +65,30 @@ module Archivist
         has_archive(options)
       end
 
-      def build_inclusion_strings(included_modules)
-        modules = ""
-        included_modules = [included_modules] unless included_modules.is_a?(Array)
-        included_modules.each do |mod|
-          modules << "include #{mod.to_s}\n"
+      def archive_for(klass)
+        "#{klass.to_s}::Archive".constantize
+      end
+
+      def attach_serializations!(klass)
+        archive_class = archive_for(klass)
+        klass.serialized_attributes.each do |column,type|
+          archive_class.send(:serialize,column,type)
         end
-        return modules
       end
-      
-      def build_serialization_strings(serializde_attributes)
-        serializations = ""
-        self.serialized_attributes.each do |key,value|
-          serializations << "serialize(:#{key},#{value.to_s})\n"
+
+      def include_modules!(klass,modules)
+        archive_class = archive_for(klass)
+        [*modules].each do |mod|
+          archive_class.send(:include,mod)
         end
-        return serializations
       end
-      
-      def build_has_many_association(associate=false)
-        associate ? "has_many :archived_#{self.table_name},:class_name=>'#{self.new.class.to_s}::Archive'" : ""
+
+      def build_associations!(klass)
+        archive_class = archive_for(klass)
+        klass.send(:has_many,"archived_#{klass.table_name}".to_sym,:class_name => archive_class.to_s)
+        archive_class.send(:belongs_to, klass.table_name.to_sym, :class_name => klass.to_s)
       end
-      
-      def build_belongs_to_association(associate=false)
-        associate ? "belongs_to :#{self.table_name},:class_name=>'#{self.new.class.to_s}'" : ""
-      end
-      
+
       def build_copy_self_to_archive(allow_multiple=false)
         if allow_multiple #we put the original pk in the fk instead
           "def copy_self_to_archive
@@ -123,9 +122,8 @@ module Archivist
         archived.save"
       end
       
-      private :build_inclusion_strings,:build_serialization_strings,
-              :build_has_many_association,:build_belongs_to_association,
-              :build_copy_self_to_archive,:yield_and_save
+      private :include_modules!,:attach_serializations!, :build_associations!,
+              :archive_for,:build_copy_self_to_archive,:yield_and_save
     end
     
     module InstanceMethods #these defs can't happen untill after we've aliased their respective originals
