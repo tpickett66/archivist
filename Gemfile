@@ -3,8 +3,10 @@ gem "activerecord", ">=3.0.1"
 gem "activeresource", ">=3.0.1"
 
 group :test do
+  gem 'minitest'
+  gem "ruby-debug"
   gem "rake"
-  gem "thoughtbot-shoulda", :require => "shoulda"
+  gem "shoulda"
 end
 
 group :mysql do
