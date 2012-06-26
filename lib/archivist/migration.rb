@@ -14,7 +14,6 @@ module Archivist
 
     module ClassMethods
       def method_missing_with_archive(method, *arguments, &block)
-        method_missing_without_archive(method, *arguments, &block)
         allowed = [:add_column,:add_timestamps,:change_column,
                    :change_column_default,:change_table,:drop_table,
                    :remove_column, :remove_columns, :remove_timestamps,
@@ -30,6 +29,7 @@ module Archivist
             ActiveRecord::Base.connection.send(method, *args, &block)
           end
         end
+        method_missing_without_archive(method, *arguments, &block)
       end
     end
   end

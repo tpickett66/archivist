@@ -55,5 +55,15 @@ class MigrationTest < ActiveSupport::TestCase
         assert_equal ['birth_date','height'],(@old_archive - @new_archive)
       end
     end
+
+    if ActiveRecord::VERSION::STRING >= "3.1"
+      context "when generating new migrations in Rails 3.1+" do
+        should "not munge up the timestamped file names" do
+          # debugger
+          next_number = AddToSomeModels.next_migration_number(1)
+          assert_match /#{Time.now.utc.strftime("%Y%m%d%H%M%S")}/,next_number
+        end
+      end
+    end
   end
 end
