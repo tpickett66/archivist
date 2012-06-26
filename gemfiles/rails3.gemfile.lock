@@ -45,6 +45,9 @@ GEM
     factory_girl (2.6.4)
       activesupport (>= 2.3.9)
     i18n (0.5.0)
+    jquery-rails (1.0.19)
+      railties (~> 3.0)
+      thor (~> 0.14)
     json (1.7.3)
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
@@ -100,13 +103,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (~> 3.0.0)
   appraisal
   archivist!
   factory_girl (< 3.0)
+  jquery-rails
   minitest
   mysql2
-  rails (>= 3.0.0)
+  rails (~> 3.0.0)
   rake
   ruby-debug
   shoulda
