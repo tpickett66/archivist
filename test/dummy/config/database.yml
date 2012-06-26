@@ -1,10 +1,16 @@
-mysql:
+mysql: &MYSQL
   adapter: mysql2
   database: archivist
   username: root
   password: 
   host: localhost
 
+development:
+  <<: *MYSQL
+
+test:
+  <<: *MYSQL
+  
 postgresql:
   adapter: postgresql
   database: archivist

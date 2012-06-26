@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestArchive < ActiveSupport::TestCase
+class ArchiveTest < ActiveSupport::TestCase
   context "The module Archivist::ArchiveMethods" do
     setup do
       connection

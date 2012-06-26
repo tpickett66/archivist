@@ -1,67 +1,36 @@
-require 'rubygems'
-require 'bundler/setup'
-require 'appraisal'
-require 'rake/testtask'
+#!/usr/bin/env rake
+begin
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
+
+begin
+  require 'rdoc/task'
+rescue LoadError
+  require 'rdoc/rdoc'
+  require 'rake/rdoctask'
+  RDoc::Task = Rake::RDocTask
+end
+
+RDoc::Task.new(:rdoc) do |rdoc|
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title    = 'Archivist'
+  rdoc.options << '--line-numbers'
+  rdoc.rdoc_files.include('README.rdoc')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
 
 Bundler::GemHelper.install_tasks
 
-task :default => :test
+require 'appraisal'
+require 'rake/testtask'
 
-def connection
-  require 'active_record'
-  unless ActiveRecord::Base.connected?
-    config_path = File.join(File.dirname(__FILE__),'test','config','database.yml')
-    config = YAML.load(File.open(config_path))
-    ActiveRecord::Base.configurations = config
-
-    database = ENV["DB"] || "mysql"
-    ActiveRecord::Base.establish_connection(config[database])
-  end
-  @connection ||= ActiveRecord::Base.connection
-end
-
-Rake::TestTask.new do |t|
+Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
-  t.test_files = FileList['test/*_test.rb']
-  t.verbose = true
+  t.libs << 'test'
+  t.pattern = 'test/**/*_test.rb'
+  t.verbose = false
 end
 
-namespace :db do
-  task :create do
-    #make sure we have a clean slate
-    connection.execute("DROP TABLE IF EXISTS some_models")
-    connection.execute("DROP TABLE IF EXISTS archived_some_models")
-    connection.execute("DROP TABLE IF EXISTS another_models")
-    connection.execute("DROP TABLE IF EXISTS archived_another_models")
-    connection.execute("DROP TABLE IF EXISTS schema_migrations")
-
-    #create a 'some_models' table
-    connection.create_table(:some_models) do |t|
-      t.string :first_name
-      t.string :last_name
-      t.string :random_array
-      t.string :some_hash
-    end
-
-    connection.create_table(:another_models) do |t|
-      t.string :first_name
-      t.string :last_name
-    end
-
-    # create a archived_some_models table
-    connection.create_table(:archived_some_models) do |t|
-      t.string :first_name
-      t.string :last_name
-      t.string :random_array
-      t.string :some_hash
-      t.datetime :deleted_at
-    end
-
-    connection.create_table(:archived_another_models) do |t|
-      t.string :first_name
-      t.string :last_name
-      t.datetime :deleted_at
-      t.integer :another_model_id
-    end
-  end
-end
+task :default => :test

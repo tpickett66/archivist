@@ -1,12 +1,8 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestBase < ActiveSupport::TestCase
+class BaseTest < ActiveSupport::TestCase
 
   context "The module Archivist::Base" do
-    setup do
-      connection
-    end
-
     should "make ActiveRecord::Base respond to has_archive" do
       assert ActiveRecord::Base.respond_to?(:has_archive)
     end
@@ -81,10 +77,6 @@ class TestBase < ActiveSupport::TestCase
   end
   
   context "The archiving functionality" do
-    setup do
-      seed_db
-    end
-    
     context "when using copy_self_to_archive and the associate_with_original option is set to true" do
       setup do
         @zapp = AnotherModel.create!(:first_name=>"Zapp",:last_name=>"Brannigan")

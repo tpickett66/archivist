@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestDb < ActiveSupport::TestCase
+class DBTest < ActiveSupport::TestCase
 
   context "The DB module" do
     should "make models respond to create_archive_table" do
@@ -13,7 +13,7 @@ class TestDb < ActiveSupport::TestCase
       end
 
       should "create the archive table" do
-        assert connection.table_exists?("archived_some_models")
+        assert ActiveRecord::Base.connection.table_exists?("archived_some_models")
       end
 
       should "create the table with the same columns" do

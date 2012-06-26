@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 require File.join(File.dirname(__FILE__),'db','migrate','01_add_to_some_models')
 
-class TestMigration < ActiveSupport::TestCase
+class MigrationTest < ActiveSupport::TestCase
   context "The Migrations module" do
     context "when migrating up" do
       setup do
