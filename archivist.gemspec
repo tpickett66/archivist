@@ -12,8 +12,11 @@ Gem::Specification.new do |s|
                       rails 3 applications, the only functionality that is not
                       duplicated is the migration from acts_as_paranoid}
   s.add_dependency("activerecord",">=3.0.0")
-  s.add_development_dependency("thoughtbot-shoulda")
+
+  %w{minitest ruby-debug rake shoulda appraisal mysql2 pg}.each do |g|
+    s.add_development_dependency(g)
+  end
  
-  s.files        = Dir.glob("{bin,lib}/**/*") + %w(MIT-LICENSE README.md)
+  s.files        = `git ls-files`.split(/\n/)
   s.require_path = 'lib'
 end
