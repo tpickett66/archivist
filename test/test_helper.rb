@@ -6,7 +6,9 @@ require "rails/test_help"
 require 'shoulda'
 require 'pry'
 require 'factory_girl'
-FactoryGirl.find_definitions
+if FactoryGirl.factories.first.nil?
+  FactoryGirl.find_definitions
+end
 
 Rails.backtrace_cleaner.remove_silencers!
 
