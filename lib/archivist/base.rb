@@ -51,6 +51,10 @@ module Archivist
           #{build_copy_self_to_archive(options[:allow_multiple_archives])}
         },File.expand_path(__FILE__),21)
 
+        if ActiveRecord::VERSION::STRING >= "3.1.0"
+          enable_archive_mass_assignment!(self)
+        end
+
         attach_serializations!(self)
         include_modules!(self,options[:included_modules]) if options[:included_modules]
 
@@ -67,6 +71,12 @@ module Archivist
 
       def archive_for(klass)
         "#{klass.to_s}::Archive".constantize
+      end
+
+      def enable_archive_mass_assignment!(klass)
+        archive_class = archive_for(klass)
+        attrs = archive_class.attribute_names
+        archive_class.send(:attr_accessible,*attrs.map(&:to_sym))
       end
 
       def attach_serializations!(klass)
