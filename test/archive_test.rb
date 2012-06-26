@@ -2,10 +2,6 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 
 class ArchiveTest < ActiveSupport::TestCase
   context "The module Archivist::ArchiveMethods" do
-    setup do
-      connection
-    end
-
     should "give the Archive subclass the super's methods" do
       assert_nothing_raised do
         model = SomeModel::Archive.new(:first_name=>"Steve",:last_name=>"Smith")
