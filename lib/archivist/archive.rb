@@ -8,7 +8,7 @@ module Archivist
     end
 
     def method_missing(method,*args,&block)
-      if get_klass_instance_methods.include?(method.to_s)
+      if get_klass_instance_methods.include?(method)
         build_proxy_method(method.to_s)
         self.method(method).call(*args,&block)
       else
@@ -17,7 +17,7 @@ module Archivist
     end
 
     def respond_to?(method,include_private=false)
-      if get_klass_instance_methods.include?(method.to_s)
+      if get_klass_instance_methods.include?(method)
         return true
       else
         super(method,include_private)
@@ -32,8 +32,14 @@ module Archivist
       @klass_name ||= self.class.to_s.split("::").first
     end
 
-    def get_klass_instance_methods
-      @klass_instance_methods ||= get_klass.instance_methods(false)
+    if RUBY_VERSION >= "1.9"
+      def get_klass_instance_methods
+        @klass_instance_methods ||= get_klass.instance_methods(false)
+      end
+    else
+      def get_klass_instance_methods
+        @klass_instance_methods ||= get_klass.instance_methods(false).map(&:to_sym)
+      end
     end
     
     def build_proxy_method(method_name)
