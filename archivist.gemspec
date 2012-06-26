@@ -6,7 +6,7 @@ require "archivist/version"
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "archivist"
-  s.version     = "1.1.0.beta1"
+  s.version     = "1.1.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Tyler Pickett"]
   s.email       = ["t.pickett66@gmail.com"]
