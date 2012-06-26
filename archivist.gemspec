@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
                       duplicated is the migration from acts_as_paranoid}
   s.add_dependency("activerecord",">=3.0.0")
 
-  %w{minitest ruby-debug rake shoulda appraisal mysql2 pg}.each do |g|
+  %w{minitest pry rake shoulda appraisal mysql2 pg}.each do |g|
     s.add_development_dependency(g)
   end
  

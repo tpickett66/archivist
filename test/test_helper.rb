@@ -5,7 +5,7 @@ require 'minitest/unit'
 require 'shoulda'
 require 'logger'
 require "fileutils"
-require 'ruby-debug'
+require 'pry'
 
 ROOT_PATH = File.join(File.dirname(__FILE__), "..")
 
