@@ -24,5 +24,6 @@ Gem::Specification.new do |s|
   %w{minitest pry rake shoulda appraisal mysql2}.each do |g|
     s.add_development_dependency(g)
   end
+  s.add_development_dependency('factory_girl','<3.0')
   s.add_development_dependency('rails','>=3.0.0')
 end
