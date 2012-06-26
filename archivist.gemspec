@@ -21,9 +21,16 @@ Gem::Specification.new do |s|
 
   s.add_dependency("activerecord",">=3.0.0")
 
-  %w{minitest pry rake shoulda appraisal mysql2}.each do |g|
+  %w{minitest rake shoulda appraisal mysql2}.each do |g|
     s.add_development_dependency(g)
   end
+
+  if RUBY_VERSION < "1.9"
+    s.add_development_dependency('ruby-debug')
+  else
+    s.add_development_dependency('debugger')
+  end
+
   s.add_development_dependency('factory_girl','<3.0')
   s.add_development_dependency('rails','>=3.0.0')
 end
