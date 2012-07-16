@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   end
 
   if RUBY_PLATFORM == 'java'
+    s.add_development_dependency('jruby-openssl')
     s.add_development_dependency('activerecord-jdbcmysql-adapter')
   else
     s.add_development_dependency('mysql2')
