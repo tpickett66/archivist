@@ -1,3 +1,8 @@
 module Archivist
-  VERSION = "1.0.1.beta1"
+  module VERSION
+    MAJOR = 1
+    MINOR = 1
+    PATCH = 0
+    STRING = "#{MAJOR}.#{MINOR}.#{PATCH}"
+  end
 end
