@@ -21,11 +21,17 @@ Gem::Specification.new do |s|
 
   s.add_dependency("activerecord",">=3.0.0")
 
-  %w{minitest rake shoulda appraisal mysql2}.each do |g|
+  %w{minitest rake shoulda appraisal}.each do |g|
     s.add_development_dependency(g)
   end
 
-  if RUBY_VERSION < "1.9"
+  if RUBY_PLATFORM == 'java'
+    s.add_development_dependency('activerecord-jdbcmysql-adapter')
+  else
+    s.add_development_dependency('mysql2')
+  end
+
+  if RUBY_VERSION < "1.9" || RUBY_PLATFORM == 'java'
     s.add_development_dependency('ruby-debug')
   else
     s.add_development_dependency('debugger')
