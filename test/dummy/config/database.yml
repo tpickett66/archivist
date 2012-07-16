@@ -1,19 +1,13 @@
-mysql: &MYSQL
-  adapter: mysql2
+development:
+  adapter: <%= (ENV['ADAPTER_TYPE'] == 'jdbc' ? 'jdbcmysql' : 'mysql2')%>
   database: archivist
   username: root
   password: 
   host: localhost
 
-development:
-  <<: *MYSQL
-
 test:
-  <<: *MYSQL
-  
-postgresql:
-  adapter: postgresql
+  adapter: <%= (ENV['ADAPTER_TYPE'] == 'jdbc' ? 'jdbcmysql' : 'mysql2')%>
   database: archivist
   username: root
-  password:
+  password: 
   host: localhost

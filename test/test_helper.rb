@@ -1,5 +1,6 @@
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
+ENV['ADAPTER_TYPE'] = (RUBY_PLATFORM == 'java' ? 'jdbc' : 'native')
 
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require "rails/test_help"
@@ -9,7 +10,7 @@ if FactoryGirl.factories.first.nil?
   FactoryGirl.find_definitions
 end
 
-if RUBY_VERSION < "1.9"
+if RUBY_VERSION < "1.9" || RUBY_PLATFORM == 'java'
   require 'ruby-debug'
 else
   require 'debugger'
