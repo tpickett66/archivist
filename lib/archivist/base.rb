@@ -45,6 +45,7 @@ module Archivist
           class Archive < ActiveRecord::Base
             self.record_timestamps = false
             self.table_name = "archived_#{self.table_name}"
+            self.primary_key = "#{self.primary_key}"
             include Archivist::ArchiveMethods
           end
           

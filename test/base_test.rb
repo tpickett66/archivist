@@ -147,7 +147,7 @@ class BaseTest < ActiveSupport::TestCase
       end
 
       should "archive the record in question" do
-        assert SomeModel::Archive.exists?(@my_model.id)
+        assert SomeModel::Archive.find(@my_model.id)
       end
 
       should "remove the original record" do
@@ -160,7 +160,7 @@ class BaseTest < ActiveSupport::TestCase
         @original.first_name = "Clark"
         @original.last_name = "Wayne"
         @original.save
-        SomeModel.where(:id=>15).first.destroy
+        SomeModel.find(15).destroy
         @archived = SomeModel::Archive.where(:id=>15)
         assert_equal "Wayne",@archived.first.last_name
       end
