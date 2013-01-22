@@ -106,7 +106,7 @@ module Archivist
             self.class.transaction do
               attrs = self.attributes.merge(:deleted_at=>DateTime.now)
               archived = #{self.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
-              archived.#{self.to_s.underscore}_id = attrs['id']
+              archived.#{table_name.singularize}_id = attrs['id']
               #{yield_and_save}
             end
           end"

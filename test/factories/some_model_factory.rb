@@ -5,4 +5,6 @@ FactoryGirl.define do
     random_array [1,2,3,4]
     some_hash { {:cat => 'Catbert'} }
   end
+
+  factory :my_namespaced_model, class: Namespace::MyNamespacedModel, parent: :some_model
 end

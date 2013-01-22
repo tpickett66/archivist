@@ -38,4 +38,20 @@ ActiveRecord::Schema.define(:version => 0) do
     t.string "random_array"
     t.string "some_hash"
   end
+
+  create_table "archived_my_namespaced_models", :force => true do |t|
+    t.integer  "my_namespaced_model_id"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "random_array"
+    t.string   "some_hash"
+    t.datetime "deleted_at"
+  end
+
+  create_table "my_namespaced_models", :force => true do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "random_array"
+    t.string "some_hash"
+  end
 end
