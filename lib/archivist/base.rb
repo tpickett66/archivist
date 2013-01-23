@@ -71,7 +71,7 @@ module Archivist
       end
 
       def archive_for(klass)
-        "#{klass.to_s}::Archive".constantize
+        "::#{klass}::Archive".constantize
       end
 
       def enable_archive_mass_assignment!(klass)
@@ -105,7 +105,7 @@ module Archivist
           "def copy_self_to_archive
             self.class.transaction do
               attrs = self.attributes.merge(:deleted_at=>DateTime.now)
-              archived = #{self.to_s}::Archive.new(attrs.reject{|k,v| k=='id'})
+              archived = ::#{self}::Archive.new(attrs.reject{|k,v| k=='id'})
               archived.#{table_name.singularize}_id = attrs['id']
               #{yield_and_save}
             end
@@ -114,7 +114,7 @@ module Archivist
           "def copy_self_to_archive
             self.class.transaction do #it would be really shitty for us to loose data in the middle of this
               attrs = self.attributes.merge(:deleted_at=>DateTime.now)
-              archived = #{self.to_s}::Archive.new
+              archived = ::#{self}::Archive.new
               if archived.class.where(:id=>self.id).empty? #create a new one if necessary, else update
                 archived.id = attrs[\"id\"]
                 archived.attributes = attrs.reject{|k,v| k=='id'}

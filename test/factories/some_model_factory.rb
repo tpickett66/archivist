@@ -7,4 +7,6 @@ FactoryGirl.define do
   end
 
   factory :my_namespaced_model, class: Namespace::MyNamespacedModel, parent: :some_model
+
+  factory :my_single_namespaced_model, class: Namespace::MySingleNamespacedModel, parent: :some_model
 end

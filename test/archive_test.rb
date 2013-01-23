@@ -12,5 +12,13 @@ class ArchiveTest < ActiveSupport::TestCase
     should "make the Archive subclass respond_to? correctly" do
       assert SomeModel::Archive.new.respond_to?(:full_name)
     end
+
+    should "now about its original class name" do
+      assert_equal '::Namespace::MyNamespacedModel', Namespace::MyNamespacedModel::Archive.new.__send__(:get_klass_name)
+    end
+
+    should "now about its original class" do
+      assert_equal ::Namespace::MyNamespacedModel, Namespace::MyNamespacedModel::Archive.new.__send__(:get_klass)
+    end
   end
 end

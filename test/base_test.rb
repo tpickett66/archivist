@@ -169,14 +169,25 @@ class BaseTest < ActiveSupport::TestCase
       end
     end
 
-    context "when calling #delete on an existing record of a namespaced model" do
+    context "when calling #delete on an existing record of a namespaced model with multiple archives" do
       setup do
         @my_model = FactoryGirl.create(:my_namespaced_model)
         @my_model.delete
       end
 
       should "archive the record in question" do
-        assert Namespace::MyNamespacedModel::Archive.find(@my_model.id)
+        assert Namespace::MyNamespacedModel::Archive.find_by_my_namespaced_model_id(@my_model.id)
+      end
+    end
+
+    context "when calling #delete on an existing record of a namespaced model with single archive" do
+      setup do
+        @my_model = FactoryGirl.create(:my_single_namespaced_model)
+        @my_model.delete
+      end
+
+      should "archive the record in question" do
+        assert Namespace::MySingleNamespacedModel::Archive.find(@my_model.id)
       end
     end
     
