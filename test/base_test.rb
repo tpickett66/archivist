@@ -17,6 +17,9 @@ class BaseTest < ActiveSupport::TestCase
       assert_nothing_raised do
         archive = SomeModel::Archive
       end
+      assert_nothing_raised do
+        archive = Namespace::MyNamespacedModel::Archive
+      end
     end
 
     should "respond to archive_indexes as a class method" do
@@ -163,6 +166,28 @@ class BaseTest < ActiveSupport::TestCase
         SomeModel.find(15).destroy
         @archived = SomeModel::Archive.where(:id=>15)
         assert_equal "Wayne",@archived.first.last_name
+      end
+    end
+
+    context "when calling #delete on an existing record of a namespaced model with multiple archives" do
+      setup do
+        @my_model = FactoryGirl.create(:my_namespaced_model)
+        @my_model.delete
+      end
+
+      should "archive the record in question" do
+        assert Namespace::MyNamespacedModel::Archive.find_by_my_namespaced_model_id(@my_model.id)
+      end
+    end
+
+    context "when calling #delete on an existing record of a namespaced model with single archive" do
+      setup do
+        @my_model = FactoryGirl.create(:my_single_namespaced_model)
+        @my_model.delete
+      end
+
+      should "archive the record in question" do
+        assert Namespace::MySingleNamespacedModel::Archive.find(@my_model.id)
       end
     end
     

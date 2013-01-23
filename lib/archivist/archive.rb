@@ -25,11 +25,11 @@ module Archivist
     end
 
     def get_klass
-      @klass ||= Kernel.const_get(get_klass_name)
+      @klass ||= get_klass_name.constantize
     end
     
     def get_klass_name
-      @klass_name ||= self.class.to_s.split("::").first
+      @klass_name ||= ([ '' ] + self.class.name.split('::')[0..-2]) * '::'
     end
 
     if RUBY_VERSION >= "1.9"
