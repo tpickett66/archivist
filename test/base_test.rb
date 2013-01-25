@@ -14,12 +14,8 @@ class BaseTest < ActiveSupport::TestCase
 
   context "Models that call has_archive" do
     should "have subclass Archive" do
-      assert_nothing_raised do
-        archive = SomeModel::Archive
-      end
-      assert_nothing_raised do
-        archive = Namespace::MyNamespacedModel::Archive
-      end
+      assert SomeModel.constants.include?(:Archive), "Expected SomeModel to have 'Archive' within its constants array"
+      assert Namespace::MyNamespacedModel.constants.include?(:Archive), "Expected Namespace::MyNamespacedModel to have 'Archive' within its constans array"
     end
 
     should "respond to archive_indexes as a class method" do

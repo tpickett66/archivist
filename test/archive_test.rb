@@ -3,10 +3,13 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 class ArchiveTest < ActiveSupport::TestCase
   context "The module Archivist::ArchiveMethods" do
     should "give the Archive subclass the super's methods" do
-      assert_nothing_raised do
-        model = SomeModel::Archive.new(:first_name=>"Steve",:last_name=>"Smith")
-        model.full_name
-      end
+      attrs = {
+        first_name: "Steve",
+        last_name: 'Smith'
+      }
+      archive = SomeModel::Archive.new(attrs)
+      model = SomeModel.new(attrs)
+      assert_equal "Smith, Steve", model.full_name, "Expected the Archive class to return the same result that the original class would"
     end
 
     should "make the Archive subclass respond_to? correctly" do
