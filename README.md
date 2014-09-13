@@ -1,3 +1,6 @@
+This gem is no longer maintained.
+=================
+
 README.md
 =================
 
